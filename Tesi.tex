@@ -1,21 +1,5 @@
-%
-% Tesi D.S.I. - modello preso da
-% Stanford University PhD thesis style -- modifications to the report style
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                         %
-%			TESI DOTTORATO                                                   %
-%			______________                                                   %
-%                                                                         %
-%			AUTORE: Elena Pagani                                             %
-%                                                                         %
-%			Ultima revisione: 7.X.1998                                       %
-%                                                                         %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%
 \documentclass[12pt]{report}
-%    \renewcommand{\baselinestretch}{1.6}      % interline spacing
+\renewcommand{\baselinestretch}{1.3}      % interline spacing
 %
 % \includeonly{}
 %
@@ -41,13 +25,13 @@
 %			TITOLO
 %
 \begin{document}
-\title{titolo}
+\title{Spazi-Unimi: \\Progettazione e implementazione dell'integrazione e validazione delle diverse fonti di dati edilizi}
 \author{Paolo Venturi}
 \dept{Corso di Laurea in Informatica} 
 \anno{2013-2014}
-\matricola{123456}
-\relatore{Prof. Alan TURING}
-\correlatore{Dr. Richard STEVENS}
+\matricola{775021}
+\relatore{Prof. Carlo Bellettini}
+\correlatore{Dr. Matteo Camilli}
 %
 %        \submitdate{month year in which submitted to GPO}
 %		- date LaTeX'd if omitted
@@ -89,9 +73,26 @@ asdjhgftry.
 \afterpreface
 % 
 % 
-%			CAPITOLO 1: dshjkfg
-\chapter{Introduzione}
+%			CAPITOLO 1
+\chapter{Introduzione al progetto Spazi-Unimi}
 \label{cap1}
+Il progetto Spazi-Unimi nasce dall’esigenza degli utenti (studenti, professori, etc.) dell’Università degli Studi di Milano di cercare in modo facile e veloce la posizione delle aule di loro interesse. 
+Vista la dislocazione delle sedi universitarie in varie aree della città (e della regione) un nuovo studente o un visitatore può avere serie difficoltà nell’orientarsi: da qui l’idea di creare una App che semplifichi la ricerca degli edifici universitari e delle loro stanze. 
+
+Spazi-Unimi è stato ideato nell’ambito del progetto Campus Sostenibile, una collaborazione tra il Politecnico di Milano e l’Università degli Studi di Milano, che si propone di trasformare il quartiere Città Studi in un modello per quanto riguarda la qualità della vita e la sostenibilità.
+Dalla proposta del Prof. Carlo Bellettini è quindi partito lo sviluppo del progetto che è stato portato avanti con altri due studenti del dipartimento di Informatica: Samuel Brandao Gomes e Diego Costantino.
+
+I file da cui estrarre le informazioni utili alla creazione dell’applicazione sono stati forniti da due diverse fonti:
+\begin{itemize}
+\item la Divisione Manutenzione edilizia e impiantistica che ha concesso le piantine delle sedi universitarie e le informazioni sulle aule didattiche;
+\item la Divisione sistemi informativi che ha concesso le informazioni sulle aule presenti sul sistema EasyRoom.
+\end{itemize}
+
+Durante le 18 settimane di stage interno il lavoro effettuato ha riguardato principalmente lo sviluppo della parte back-end che si propone di fornire agli addetti delle diverse fonti di dati un modo semplice e immediato per aggiornare le informazioni.
+La parte su cui più si è incentrato il mio lavoro è stata l'unione dei dati provenienti dalle diverse fonti cercando di rendere disponibili all'utente finale le migliori informazioni per quanto riguarda completezza e qualità.
+
+Nell'untima parte dello stage invece ci si è concentrati sulla definizione di un'interfaccia REST API utile alle nostre necessità e all'eleborazione di una semplice applicazione (ANDROID/WEB?) come prototipo di dimostrazione per il futuro sviluppo di un'applicazione multipiattaforma utile agli utenti dell'università.
+     
 %
 %
 
