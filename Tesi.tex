@@ -74,8 +74,11 @@ asdjhgftry.
 % 
 % 
 %			CAPITOLO 1
-\chapter{Introduzione al progetto Spazi-Unimi}
+\chapter{Il progetto Spazi-Unimi}
 \label{cap1}
+
+\section{Introduzione al progetto}
+
 Il progetto Spazi-Unimi nasce dall’esigenza degli utenti (studenti, professori, etc.) dell’Università degli Studi di Milano di cercare in modo facile e veloce la posizione delle aule di loro interesse. 
 Vista la dislocazione delle sedi universitarie in varie aree della città (e della regione) un nuovo studente o un visitatore può avere serie difficoltà nell’orientarsi: da qui l’idea di creare una App che semplifichi la ricerca degli edifici universitari e delle loro stanze. 
 
@@ -91,8 +94,74 @@ I file da cui estrarre le informazioni utili alla creazione dell’applicazione 
 Durante le 18 settimane di stage interno il lavoro effettuato ha riguardato principalmente lo sviluppo della parte back-end che si propone di fornire agli addetti delle diverse fonti di dati un modo semplice e immediato per aggiornare le informazioni.
 La parte su cui più si è incentrato il mio lavoro è stata l'unione dei dati provenienti dalle diverse fonti cercando di rendere disponibili all'utente finale le migliori informazioni per quanto riguarda completezza e qualità.
 
-Nell'untima parte dello stage invece ci si è concentrati sulla definizione di un'interfaccia REST API utile alle nostre necessità e all'eleborazione di una semplice applicazione (ANDROID/WEB?) come prototipo di dimostrazione per il futuro sviluppo di un'applicazione multipiattaforma utile agli utenti dell'università.
-     
+Nell'untima parte dello stage invece ci si è concentrati sulla definizione di un'interfaccia REST API utile alle necessità della futura applicazione multipiattaforma scaricabile dagli utenti dell'università.
+
+
+\section{Il problema e i dati forniti per risolverlo}
+
+La prima attività svolta è stato uno studio di fattibilità: sapendo che sul mercato non era presente nessuna applicazione/tool simile a quella che si voleva sviluppare ci si è concentrati più sulla ricerca di possibili librerie utili all'analisi dei file forniti dalle varie fonti. 
+Sia l'edilizia che i sistemi informativi hanno fornito dati sulle aule organizzati in fogli elettronici e scritti in formato XLS, per quanto riguarda le mappe messe a disposizione dall'edilizia invece le informazioni sono su file di tipo AutoCAD DWG. 
+
+I file XLS essendo per loro natura in formato tabellare risultano di non difficile lettura ma ancora più semplice risulta quella dei file CSV (Comma-separated values) un formato basato su file di testo ricavabile senza sforzo da fogli elettronici o da database. 
+
+Il formato AutoCAD DWG invece è risultato molto più complicato da analizzare in quanto risulta essere un file binario diviso in diverse sezioni la cui codifica è molto complessa. Vista l'impossibilità di ottenere dati in modo semplice si è cercato un formato più adatto ai nostri scopi in cui esportare la collezione di 606 file DWG forniti. La scelta è ricaduta sull'altro formato AutoCAD cioè il DXF: questo standard utilizza un file ASCII diviso in sezioni (HEADER, CLASSES, TABLES, ENTITIES, OBJECTS, THUMBNAILIMAGE ed END OF FILE) risultando abbastanza leggibilie a chiunque. La sezione di maggior interesse pe in notri scopi è risultata ENTITIES che contiene tutti gli oggetti disegnati nel file con le loro caratteristiche.
+
+Dimostrata la fattibilità del progetto partendo da questi formati di dati ci si è concentrati sulla ricerca degli scenari d'uso per l'applicazione:        
+\begin{itemize}
+\item trovare le sedi universitarie vicine alla propria posizione;
+\item trovare le stanze di una certa categoria (biblioteche, aule, punti ristoro, etc...) più vicine;
+\item cercare le stanze per nome mostrando una lista in caso di ambiguità;
+\item mostrare le mappe interne degli edifici rendendole interattive;
+\item segnalare errori e problematiche con un apposito form in modo da rendere le informazioni disponibili sempre più corrette e affidabili.
+\end{itemize}
+
+
+\section{Scelta di tool, tecnologie e tecniche di sviluppo}
+
+
+
+\section{Estrzione dei dati dai file DXF}
+
+
+
+
+\section{Estrazione dei dati dai file CSV}
+
+\section{Salvataggio dei dati in MongoDB}
+
+
+\chapter{Integrazione e validazione delle diverse fonti di dati edilizi}
+\label{cap2}
+
+\section{Data Integration: teoria e possibili utilizzi}
+
+\section{Analisi dei dati (da DXF e CSV)}
+
+\section{Definizione di un sistema non dipendente dall'ordine di esecuzione}
+
+\section{Strategie di merging dei dati adottate}
+
+\section{Possibili miglioramenti}
+
+\section{Reporting degli errori e delle criticità}
+
+\section{Indirizzo ben formato: teoria e possibile utilizzo}
+
+\section{Definizione di un DBAnalysis per avere statistiche specifiche sul Merge}
+
+
+\chapter{Considerazioni finali e presentazione dei risultati}
+\label{cap3}
+
+\section{Definizione di API}
+
+\section{Statistiche sui tempi di calcolo e di risposta del DB}
+
+\section{Considerazioni sullo sviluppo del progetto}
+
+\section{Miglioramenti/crescita dal lato personale}
+
+
 %
 %
 
