@@ -13,6 +13,14 @@
 \usepackage{epsfig}
 \usepackage[italian]{babel}
 \usepackage{tesi}
+\usepackage[procnames]{listings}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{caption}
+
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{codice}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=codice,labelfont=white,textfont=white}
 
 % per le accentate
 \usepackage[utf8]{inputenc}
@@ -25,6 +33,21 @@
 %			TITOLO
 %
 \begin{document}
+
+\definecolor{keywords}{RGB}{255,0,90}
+\definecolor{comments}{RGB}{0,0,113}
+\definecolor{red}{RGB}{160,0,0}
+\definecolor{green}{RGB}{0,150,0}
+ 
+\lstset{language=Python, 
+        basicstyle=\ttfamily\small, 
+        keywordstyle=\color{keywords},
+        commentstyle=\color{comments},
+        stringstyle=\color{red},
+        showstringspaces=false,
+        identifierstyle=\color{green},
+        procnamekeys={def,class}}
+
 \title{Spazi-Unimi: \\Progettazione e implementazione dell'integrazione e validazione delle diverse fonti di dati edilizi}
 \author{Paolo Venturi}
 \dept{Corso di Laurea in Informatica} 
@@ -118,10 +141,86 @@ Dimostrata la fattibilità del progetto partendo da questi formati di dati ci si
 
 \section{Scelta di tool, tecnologie e tecniche di sviluppo}
 
+La fase successiva del progetto ha riguardato la scelta delle tecnologie da utilizzare durante lo sviluppo delle funzionalità: prima fra tutte la scelta del linguaggio di programmazione.
 
+Dopo un'esplorazione delle varie possibilità è stato deciso di utilizzare Python nella sua ultima versione (la 3). Python è un linguaggio ad alto livello multi paradigma: è orientato agli oggetti ma possiede caratteristiche dei linguaggi funzionali che rendono molto più semplice e leggibile l'implementazione di alcuni pezzi di codice.
 
+In Python le variabili non sono tipizzate (quindi ogni variabile è un puntatore ad un oggetto): il controllo dei tipi è comunque molto forte e viene fatto tramite tipizzazione dinamica.
+Per quanto riguarda la leggibilità del codice in Python viene utilizzata l'indentazione per dividere i programmi in blocchi: ciò porta il codice ad essere molto più elegante rispetto ad altri linguaggi e lo rende molto leggibile anche per chi non conosce il linguaggio.
+
+Gli aspetti funzionali più importanti e più utili alla programmazione presenti in Python sono:
+\begin{itemize}
+\item le list comprehension, costruttori di liste che utilizzano una modalità di creazione molto intuitiva e matematica;
+\begin{lstlisting}[label=codice,caption=Esempio di List Comprehension]
+>>> [(x, y) for x in [1,2,3] for y in [3,1,4] if x != y]
+[(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)] 
+\end{lstlisting}
+\item i generatori, simili alle list comprehension non occupano però memoria;
+\begin{lstlisting}[label=codice,caption=Esempio di Generatore]
+>>> g = ((x, y) for x in [1,2,3] for y in [3,1,4] if x != y)
+>>> g
+<generator object <genexpr> at 0x7fca9fb91240>
+>>> list(g)
+[(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)]
+\end{lstlisting}
+\item la parola chiave lambda, utilizzata per definire piccole funzioni utilizzate solo in certe zone del codice senza dover definire una funzione che non verrà più richiamata.
+\begin{lstlisting}[label=codice,caption=Esempio di utlizzo della lambda]
+>>> g = lambda x: x**2
+>>> print(g(8))
+64
+\end{lstlisting}
+\end{itemize}  
+ 
+Un'altra caratteristica che ci ha portato a scegliere Python è il fatto che sia un linguaggio interpretato e che fornisca un interprete da riga di comando avanzato (bpython) con il quale provare il codice risulta molto semplice e veloce. 
+
+Per quanto riguarda le performace Pyhton risulta migliore di altri linguaggi interpretati come PHP e Ruby e nonostante non sia paragonabile al C risulta abbastanza simile a linguaggi compilati (Java).
+
+Ultimo vantaggio dell'usare Python ma dall'elevata importanza è il fatto che possieda una vasta libreria standard ed esista uno svariato numero di librerie importabili che possono svolgere e implementare molte funzionalità e algoritmi. Inoltre è presente un framework di testing unitario (unittest) utile a testare i vari metodi presenti nelle classi implementate: ciò ha reso possibile l'applicazione di modelli di sviluppo software come il TDD (Test Driven Development).
+
+La seconda scelta da effettuare in ambito tecnologico è stata la tipologia di database: vista la grande mole di dati e la loro non completezza si è deciso di utilizzare MongoDB. MongoDB è il database NoSQL più diffuso a livello mondiale, la sua tipologia non è relazionale come per i database classici ma si basa sugli oggetti. La memorizzazione dei dati viene effettuata su una tipologia perticolare di file JSON detti BSON con uno schema dinamico così che i campi che risulterebbero vuoti in un DB SQL qui non esistono. 
+
+Altro vantaggio della scelta di MongoDB è la possibilità di specificare query avanzate al database che in SQL non sarebbero possibili; grazie all'utilizzo di JavaScript inoltre si possono definire funzioni ad hoc da applicare ai risultati. Le prestazioni in lettura e scrittura di Mongo inoltre sono molto buone per dati di grosse dimensioni come quelli su cui abbiamo lavorato. Ciò è anche dovuto al fatto che in MongoDB esiste la possibilità di creare degli indici che velocizzino la ricerca per campi/documenti usati molto spesso nelle query. Tra gli indici creabili ve ne è uno in particolare che ci è sembrato molto utile per lo sviluppo del nostro progetto: l'indice geospaziale. Dovendo lavorare, tra le alre cose, anche sulle coordinate degli edifici universitari la possibilità di creare un indice per poter effettuare query specifiche basate sulle posizioni geospaziali è sembrata un enorme vantaggio.
+
+Per fare lavorare al meglio il linguaggio (Python 3) con il database (MongoDB) abbiamo inoltre esplorato le librerie disponibili: la scelta è ricaduta su PyMongo che permette in modo facile e veloce di connettersi ad un database MongoDB da un codice Python. PyMongo inoltre fornisce la possibilità di effettuare semplicemente ogni operazione possibile su di un DB: query, inserimenti, creazioni di collection e di indici. 
+ 
+Come per ogni progetto di una certa complessità sorge la necessità di utilizzare un sistema di versioning: la scelta è ricaduta su git uno dei più famosi ed utilizzati software di controllo di versione distribuito. Oltre alla possibilità di tenere traccia delle modifiche fatte ai file del progetto git permette di dividere il lavoro in branch separati così da poter sviluppare diverse funzionalità in autonomia e senza modificare il progetto centrale (nel branch 'master'). I vari branch sono poi unificabili grazie alla procedura di merge. La repository git così creata è stata poi caricata ad un servizio web di hosting specializzato: GitHub; in questo modo i vari elementi del team di sviluppo hanno potuto sempre avere il codice aggionato alle ultime modifiche.
+
+A questo punto l'eplorazione si è concentrata sui possibili tool/applicazioni utili all'organizzazione del lavoro e alla raccolta di appunti e note.
+Per quanto riguarda l'organizzazione è risultato molto utile e semplice da utilizzare Trello: si tratta di un'applicazione basata su cartelloni (board). Ogni board è diviso in liste ed ogni lista contiene delle tessere (card) ordinabili: indicando un'attività o una funzionalità da implemetare su ogni card si ha un quadro generale molto chiaro dello stato del progetto. Durante lo sviluppo abbiamo ordianto le liste in base alle priorità che secondo noi possedeva ogni tessera; grazie alla possibilità di assegnare le tessere ai membri del team inoltre il lavoro di organizzazione è risultato facilitato.
+
+L'ultima applicazione utilizzata è stata Evernote: utile alla raccolta di note ed appunti è risultata molto utile per salvare resoconti e insiemi di informazioni molto più grandi rispetto a quelli di Trello. 
+
+Come tecniche di sviluppo del software abbiamo cercato di applicare gli aspetti dell'Extreme Programming (XP) utili al nostro caso. XP è una metodologia di sviluppo del software appartenente alla famiglia delle metodologie agili ed è definita da 12 aspetti/attività principali:
+\begin{enumerate}
+\item Planning game
+\item Brevi cicli di rilascio
+\item Uso di una metafora
+\item Semplicità di progetto
+\item Testing
+\item Refactoring
+\item Programmazione a coppie 
+\item Proprietà collettiva 
+\item Integrazione continua
+\item Settimana di 40 ore
+\item Cliente sul posto
+\item Standard di codifica
+\end{enumerate}
+
+Il planning game cioè la definizione delle funzionalità da implementare viste le priorità, le stime dei costi e altre valutazione tecniche è stato messo in atta anche grazie all'utilizzo di Trello.
+
+Il testing è risultato un'importante risorsa nel corso dello sviluppo del progetto: oltre a dare maggiore sicurezza sulla correttezza del codice scritto in molte occasioni è stato utilizzato il TDD. Il TDD (Test Driven Development) è una tecnica utile sia ad aumentare la copertura dei test sia a scrivere il codice nella maniera più semplice ed efficace. Lo sviluppo guidato dai test si divide in tre fasi fondamentali:
+\begin{itemize}
+\item scrittura del test, il test viene scritto in base alla funzionalità che si vuole implementare e deve fallire in quanto tale funzionalità non esiste ancora;
+\item definizione della funzioanlità, viene implementato il codice e si controlla tramite il test la sua correttezza;
+\item refactoring, viene modificato il codice in modo da renderlo più efficente, leggibile e riusabile.
+\end{itemize} 
+
+Oltre ad essere presente nell'approccio TDD il refactoring è stato utilizzato largamente durante lo sviluppo del progetto soprattutto per rendere il codice, non sempre di facile comprensione, il più leggibile ed elegante possibile.
+
+La programmazione a coppie suggerita da Extreme Programming è stata applicata per gran parte del processo di sviluppo nonostante il team fosse composto da 3 elementi. Per ovviare a questo 'problema' la composizione della coppia che portava avanti l'implemetazione è stata decisa a rotazione: due persone scrivevano codice e una studiava nuove funzionalità o migliorava la propria conoscienza delle tecnologie utilizzate. Soprattutto nella prima parte di sviluppo questo approccio è risultato molto produttivo in quanto gli tutte le persone del progetto erano alle prime esperienze per quanto riguarda l'uso del linguaggio di programmazione scelto (Python), del database (MongoDB) ma anche per il lavoro in team. Nella seconda parte del progetto invece l'elemeto che restava da solo avendo ormai acquisito sufficiente padronanza delle tecnologie scelte poteva sviluppare autonomamente nuove funzionalità.
+
+Lo standard di codifica è stato scelto semre in funzione della leggibilità e dell'eleganza del codice; il pair programmming inoltre ha aiutato enormemente nel rispettarlo. Per quanto riguarda la documentazione invece si è cercato di aggiungere dei commenti all'inizio di ogni metodo complesso che specificassero la funzione, i parametri in ingresso e i risultati ritornati. Altri commenti invece sono stati inseriti nella parti di codice considerate poco leggibili in modo da aiutare anche un membro esterno al team a capirlo.   
 \section{Estrzione dei dati dai file DXF}
-
 
 
 
