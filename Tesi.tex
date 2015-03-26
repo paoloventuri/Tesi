@@ -1,5 +1,5 @@
 \documentclass[12pt]{report}
-\renewcommand{\baselinestretch}{1.3}      % interline spacing
+\renewcommand{\baselinestretch}{1.5}      % interline spacing
 %
 % \includeonly{}
 %
@@ -18,10 +18,6 @@
 \usepackage{xcolor}
 \usepackage{caption}
 
-\DeclareCaptionFont{white}{\color{white}}
-\DeclareCaptionFormat{codice}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
-\captionsetup[lstlisting]{format=codice,labelfont=white,textfont=white}
-
 % per le accentate
 \usepackage[utf8]{inputenc}
 %
@@ -33,6 +29,7 @@
 %			TITOLO
 %
 \begin{document}
+\renewcommand{\baselinestretch}{1.4}      % interline spacing
 
 \definecolor{keywords}{RGB}{255,0,90}
 \definecolor{comments}{RGB}{0,0,113}
@@ -81,7 +78,8 @@
 hkjafgyruet.
 %
 %
-%			ORGANIZZAZIONE
+
+\newpage%			ORGANIZZAZIONE
 \section*{Organizzazione della tesi}
 \label{organizzazione}
 La tesi \`e organizzata come segue:
@@ -106,9 +104,9 @@ Il progetto Spazi-Unimi nasce dall’esigenza degli utenti (studenti, professori
 Vista la dislocazione delle sedi universitarie in varie aree della città (e della regione) un nuovo studente o un visitatore può avere serie difficoltà nell’orientarsi: da qui l’idea di creare una App che semplifichi la ricerca degli edifici universitari e delle loro stanze. 
 
 Spazi-Unimi è stato ideato nell’ambito del progetto Campus Sostenibile, una collaborazione tra il Politecnico di Milano e l’Università degli Studi di Milano, che si propone di trasformare il quartiere Città Studi in un modello per quanto riguarda la qualità della vita e la sostenibilità.
-Dalla proposta del Prof. Carlo Bellettini è quindi partito lo sviluppo del progetto che è stato portato avanti con altri due studenti del dipartimento di Informatica: Samuel Brandao Gomes e Diego Costantino.
+Dalla proposta del Prof. Carlo Bellettini è quindi partito lo sviluppo del progetto che è stato portato avanti con altri due studenti del dipartimento di Informatica: Samuel Gomes Brandao e Diego Costantino.
 
-I file da cui estrarre le informazioni utili alla creazione dell’applicazione sono stati forniti da due diverse fonti:
+I file da cui estrarre le informazioni utili alla creazione dell'applicazione sono stati forniti da due diverse fonti:
 \begin{itemize}
 \item la Divisione Manutenzione edilizia e impiantistica che ha concesso le piantine delle sedi universitarie e le informazioni sulle aule didattiche;
 \item la Divisione sistemi informativi che ha concesso le informazioni sulle aule presenti sul sistema EasyRoom.
@@ -117,9 +115,10 @@ I file da cui estrarre le informazioni utili alla creazione dell’applicazione 
 Durante le 18 settimane di stage interno il lavoro effettuato ha riguardato principalmente lo sviluppo della parte back-end che si propone di fornire agli addetti delle diverse fonti di dati un modo semplice e immediato per aggiornare le informazioni.
 La parte su cui più si è incentrato il mio lavoro è stata l'unione dei dati provenienti dalle diverse fonti cercando di rendere disponibili all'utente finale le migliori informazioni per quanto riguarda completezza e qualità.
 
-Nell'untima parte dello stage invece ci si è concentrati sulla definizione di un'interfaccia REST API utile alle necessità della futura applicazione multipiattaforma scaricabile dagli utenti dell'università.
+Nell'ultima parte dello stage invece ci si è concentrati sulla definizione di un'interfaccia REST API utile alle necessità della futura applicazione multipiattaforma scaricabile dagli utenti dell'università.
 
 
+\newpage
 \section{Il problema e i dati forniti per risolverlo}
 
 La prima attività svolta è stato uno studio di fattibilità: sapendo che sul mercato non era presente nessuna applicazione/tool simile a quella che si voleva sviluppare ci si è concentrati più sulla ricerca di possibili librerie utili all'analisi dei file forniti dalle varie fonti. 
@@ -127,7 +126,7 @@ Sia l'edilizia che i sistemi informativi hanno fornito dati sulle aule organizza
 
 I file XLS essendo per loro natura in formato tabellare risultano di non difficile lettura ma ancora più semplice risulta quella dei file CSV (Comma-separated values) un formato basato su file di testo ricavabile senza sforzo da fogli elettronici o da database. 
 
-Il formato AutoCAD DWG invece è risultato molto più complicato da analizzare in quanto risulta essere un file binario diviso in diverse sezioni la cui codifica è molto complessa. Vista l'impossibilità di ottenere dati in modo semplice si è cercato un formato più adatto ai nostri scopi in cui esportare la collezione di 606 file DWG forniti. La scelta è ricaduta sull'altro formato AutoCAD cioè il DXF: questo standard utilizza un file ASCII diviso in sezioni (HEADER, CLASSES, TABLES, ENTITIES, OBJECTS, THUMBNAILIMAGE ed END OF FILE) risultando abbastanza leggibilie a chiunque. La sezione di maggior interesse pe in notri scopi è risultata ENTITIES che contiene tutti gli oggetti disegnati nel file con le loro caratteristiche.
+Il formato AutoCAD DWG invece è risultato molto più complicato da analizzare in quanto risulta essere un file binario diviso in diverse sezioni la cui codifica è molto complessa. Vista l'impossibilità di ottenere dati in modo semplice si è cercato un formato più adatto ai nostri scopi in cui esportare la collezione di 606 file DWG forniti. La scelta è ricaduta sull'altro formato AutoCAD cioè il DXF: questo standard utilizza un file ASCII diviso in sezioni (HEADER, CLASSES, TABLES, ENTITIES, OBJECTS, THUMBNAILIMAGE ed END OF FILE) risultando abbastanza leggibile a chiunque. La sezione di maggior interesse per in nostri scopi è risultata ENTITIES che contiene tutti gli oggetti disegnati nel file con le loro caratteristiche.
 
 Dimostrata la fattibilità del progetto partendo da questi formati di dati ci si è concentrati sulla ricerca degli scenari d'uso per l'applicazione:        
 \begin{itemize}
@@ -139,6 +138,7 @@ Dimostrata la fattibilità del progetto partendo da questi formati di dati ci si
 \end{itemize}
 
 
+\newpage
 \section{Scelta di tool, tecnologie e tecniche di sviluppo}
 
 La fase successiva del progetto ha riguardato la scelta delle tecnologie da utilizzare durante lo sviluppo delle funzionalità: prima fra tutte la scelta del linguaggio di programmazione.
@@ -151,12 +151,12 @@ Per quanto riguarda la leggibilità del codice in Python viene utilizzata l'inde
 Gli aspetti funzionali più importanti e più utili alla programmazione presenti in Python sono:
 \begin{itemize}
 \item le list comprehension, costruttori di liste che utilizzano una modalità di creazione molto intuitiva e matematica;
-\begin{lstlisting}[label=codice,caption=Esempio di List Comprehension]
+\begin{lstlisting}[label=codice,caption=Esempio di List Comprehension, frame=single]
 >>> [(x, y) for x in [1,2,3] for y in [3,1,4] if x != y]
 [(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)] 
 \end{lstlisting}
 \item i generatori, simili alle list comprehension non occupano però memoria;
-\begin{lstlisting}[label=codice,caption=Esempio di Generatore]
+\begin{lstlisting}[label=codice,caption=Esempio di Generatore, frame=single]
 >>> g = ((x, y) for x in [1,2,3] for y in [3,1,4] if x != y)
 >>> g
 <generator object <genexpr> at 0x7fca9fb91240>
@@ -164,7 +164,7 @@ Gli aspetti funzionali più importanti e più utili alla programmazione presenti
 [(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)]
 \end{lstlisting}
 \item la parola chiave lambda, utilizzata per definire piccole funzioni utilizzate solo in certe zone del codice senza dover definire una funzione che non verrà più richiamata.
-\begin{lstlisting}[label=codice,caption=Esempio di utlizzo della lambda]
+\begin{lstlisting}[label=codice,caption=Esempio di utilizzo della lambda, frame=single]
 >>> g = lambda x: x**2
 >>> print(g(8))
 64
@@ -177,16 +177,16 @@ Per quanto riguarda le performace Pyhton risulta migliore di altri linguaggi int
 
 Ultimo vantaggio dell'usare Python ma dall'elevata importanza è il fatto che possieda una vasta libreria standard ed esista uno svariato numero di librerie importabili che possono svolgere e implementare molte funzionalità e algoritmi. Inoltre è presente un framework di testing unitario (unittest) utile a testare i vari metodi presenti nelle classi implementate: ciò ha reso possibile l'applicazione di modelli di sviluppo software come il TDD (Test Driven Development).
 
-La seconda scelta da effettuare in ambito tecnologico è stata la tipologia di database: vista la grande mole di dati e la loro non completezza si è deciso di utilizzare MongoDB. MongoDB è il database NoSQL più diffuso a livello mondiale, la sua tipologia non è relazionale come per i database classici ma si basa sugli oggetti. La memorizzazione dei dati viene effettuata su una tipologia perticolare di file JSON detti BSON con uno schema dinamico così che i campi che risulterebbero vuoti in un DB SQL qui non esistono. 
+La seconda scelta da effettuare in ambito tecnologico è stata la tipologia di database: vista la grande mole di dati e la loro non completezza si è deciso di utilizzare MongoDB. MongoDB è il database NoSQL più diffuso a livello mondiale, la sua tipologia non è relazionale come per i database classici ma si basa sugli oggetti. La memorizzazione dei dati viene effettuata su una tipologia particolare di file JSON detti BSON con uno schema dinamico così che i campi che risulterebbero vuoti in un DB SQL qui non esistono. 
 
-Altro vantaggio della scelta di MongoDB è la possibilità di specificare query avanzate al database che in SQL non sarebbero possibili; grazie all'utilizzo di JavaScript inoltre si possono definire funzioni ad hoc da applicare ai risultati. Le prestazioni in lettura e scrittura di Mongo inoltre sono molto buone per dati di grosse dimensioni come quelli su cui abbiamo lavorato. Ciò è anche dovuto al fatto che in MongoDB esiste la possibilità di creare degli indici che velocizzino la ricerca per campi/documenti usati molto spesso nelle query. Tra gli indici creabili ve ne è uno in particolare che ci è sembrato molto utile per lo sviluppo del nostro progetto: l'indice geospaziale. Dovendo lavorare, tra le alre cose, anche sulle coordinate degli edifici universitari la possibilità di creare un indice per poter effettuare query specifiche basate sulle posizioni geospaziali è sembrata un enorme vantaggio.
+Altro vantaggio della scelta di MongoDB è la possibilità di specificare query avanzate al database che in SQL non sarebbero possibili; grazie all'utilizzo di JavaScript inoltre si possono definire funzioni ad hoc da applicare ai risultati. Le prestazioni in lettura e scrittura di Mongo inoltre sono molto buone per dati di grosse dimensioni come quelli su cui abbiamo lavorato. Ciò è anche dovuto al fatto che in MongoDB esiste la possibilità di creare degli indici che velocizzino la ricerca per campi/documenti usati molto spesso nelle query. Tra gli indici creabili ve ne è uno in particolare che ci è sembrato molto utile per lo sviluppo del nostro progetto: l'indice geospaziale. Dovendo lavorare, tra le altre cose, anche sulle coordinate degli edifici universitari la possibilità di creare un indice per poter effettuare query specifiche basate sulle posizioni geospaziali è sembrata un enorme vantaggio.
 
 Per fare lavorare al meglio il linguaggio (Python 3) con il database (MongoDB) abbiamo inoltre esplorato le librerie disponibili: la scelta è ricaduta su PyMongo che permette in modo facile e veloce di connettersi ad un database MongoDB da un codice Python. PyMongo inoltre fornisce la possibilità di effettuare semplicemente ogni operazione possibile su di un DB: query, inserimenti, creazioni di collection e di indici. 
  
-Come per ogni progetto di una certa complessità sorge la necessità di utilizzare un sistema di versioning: la scelta è ricaduta su git uno dei più famosi ed utilizzati software di controllo di versione distribuito. Oltre alla possibilità di tenere traccia delle modifiche fatte ai file del progetto git permette di dividere il lavoro in branch separati così da poter sviluppare diverse funzionalità in autonomia e senza modificare il progetto centrale (nel branch 'master'). I vari branch sono poi unificabili grazie alla procedura di merge. La repository git così creata è stata poi caricata ad un servizio web di hosting specializzato: GitHub; in questo modo i vari elementi del team di sviluppo hanno potuto sempre avere il codice aggionato alle ultime modifiche.
+Come per ogni progetto di una certa complessità sorge la necessità di utilizzare un sistema di versioning: la scelta è ricaduta su git uno dei più famosi ed utilizzati software di controllo di versione distribuito. Oltre alla possibilità di tenere traccia delle modifiche fatte ai file del progetto git permette di dividere il lavoro in branch separati così da poter sviluppare diverse funzionalità in autonomia e senza modificare il progetto centrale (nel branch 'master'). I vari branch sono poi unificabili grazie alla procedura di merge. La repository git così creata è stata poi caricata ad un servizio web di hosting specializzato: GitHub; in questo modo i vari elementi del team di sviluppo hanno potuto sempre avere il codice aggiornato alle ultime modifiche.
 
-A questo punto l'eplorazione si è concentrata sui possibili tool/applicazioni utili all'organizzazione del lavoro e alla raccolta di appunti e note.
-Per quanto riguarda l'organizzazione è risultato molto utile e semplice da utilizzare Trello: si tratta di un'applicazione basata su cartelloni (board). Ogni board è diviso in liste ed ogni lista contiene delle tessere (card) ordinabili: indicando un'attività o una funzionalità da implemetare su ogni card si ha un quadro generale molto chiaro dello stato del progetto. Durante lo sviluppo abbiamo ordianto le liste in base alle priorità che secondo noi possedeva ogni tessera; grazie alla possibilità di assegnare le tessere ai membri del team inoltre il lavoro di organizzazione è risultato facilitato.
+A questo punto l'esplorazione si è concentrata sui possibili tool/applicazioni utili all'organizzazione del lavoro e alla raccolta di appunti e note.
+Per quanto riguarda l'organizzazione è risultato molto utile e semplice da utilizzare Trello: si tratta di un'applicazione basata su cartelloni (board). Ogni board è diviso in liste ed ogni lista contiene delle tessere (card) ordinabili: indicando un'attività o una funzionalità da implementare su ogni card si ha un quadro generale molto chiaro dello stato del progetto. Durante lo sviluppo abbiamo ordinato le liste in base alle priorità che secondo noi possedeva ogni tessera; grazie alla possibilità di assegnare le tessere ai membri del team inoltre il lavoro di organizzazione è risultato facilitato.
 
 L'ultima applicazione utilizzata è stata Evernote: utile alla raccolta di note ed appunti è risultata molto utile per salvare resoconti e insiemi di informazioni molto più grandi rispetto a quelli di Trello. 
 
@@ -206,26 +206,187 @@ Come tecniche di sviluppo del software abbiamo cercato di applicare gli aspetti 
 \item Standard di codifica
 \end{enumerate}
 
-Il planning game cioè la definizione delle funzionalità da implementare viste le priorità, le stime dei costi e altre valutazione tecniche è stato messo in atta anche grazie all'utilizzo di Trello.
+Il planning game cioè la definizione delle funzionalità da implementare viste le priorità, le stime dei costi e altre valutazione tecniche è stato messo in atta anche grazie all'utilizzo di Trello. Non sempre però è stato possibile definire dei test in quanto certi pezzi di codice dipendevano totalmente da librerie esterne o definivano algoritmi procedurali il cui funzionamento era difficilmente testabile in maniera efficace.
 
 Il testing è risultato un'importante risorsa nel corso dello sviluppo del progetto: oltre a dare maggiore sicurezza sulla correttezza del codice scritto in molte occasioni è stato utilizzato il TDD. Il TDD (Test Driven Development) è una tecnica utile sia ad aumentare la copertura dei test sia a scrivere il codice nella maniera più semplice ed efficace. Lo sviluppo guidato dai test si divide in tre fasi fondamentali:
 \begin{itemize}
 \item scrittura del test, il test viene scritto in base alla funzionalità che si vuole implementare e deve fallire in quanto tale funzionalità non esiste ancora;
-\item definizione della funzioanlità, viene implementato il codice e si controlla tramite il test la sua correttezza;
-\item refactoring, viene modificato il codice in modo da renderlo più efficente, leggibile e riusabile.
+\item definizione della funzionalità, viene implementato il codice e si controlla tramite il test la sua correttezza;
+\item refactoring, viene modificato il codice in modo da renderlo più efficiente, leggibile e riusabile.
 \end{itemize} 
 
 Oltre ad essere presente nell'approccio TDD il refactoring è stato utilizzato largamente durante lo sviluppo del progetto soprattutto per rendere il codice, non sempre di facile comprensione, il più leggibile ed elegante possibile.
 
-La programmazione a coppie suggerita da Extreme Programming è stata applicata per gran parte del processo di sviluppo nonostante il team fosse composto da 3 elementi. Per ovviare a questo 'problema' la composizione della coppia che portava avanti l'implemetazione è stata decisa a rotazione: due persone scrivevano codice e una studiava nuove funzionalità o migliorava la propria conoscienza delle tecnologie utilizzate. Soprattutto nella prima parte di sviluppo questo approccio è risultato molto produttivo in quanto gli tutte le persone del progetto erano alle prime esperienze per quanto riguarda l'uso del linguaggio di programmazione scelto (Python), del database (MongoDB) ma anche per il lavoro in team. Nella seconda parte del progetto invece l'elemeto che restava da solo avendo ormai acquisito sufficiente padronanza delle tecnologie scelte poteva sviluppare autonomamente nuove funzionalità.
+La programmazione a coppie suggerita da Extreme Programming è stata applicata per gran parte del processo di sviluppo nonostante il team fosse composto da 3 elementi. Per ovviare a questo 'problema' la composizione della coppia che portava avanti l'implementazione è stata decisa a rotazione: due persone scrivevano codice e una studiava nuove funzionalità o migliorava la propria conoscenza delle tecnologie utilizzate. Soprattutto nella prima parte di sviluppo questo approccio è risultato molto produttivo in quanto gli tutte le persone del progetto erano alle prime esperienze per quanto riguarda l'uso del linguaggio di programmazione scelto (Python), del database (MongoDB) ma anche per il lavoro in team. Nella seconda parte del progetto invece l'elemento che restava da solo avendo ormai acquisito sufficiente padronanza delle tecnologie scelte poteva sviluppare autonomamente nuove funzionalità.
 
-Lo standard di codifica è stato scelto semre in funzione della leggibilità e dell'eleganza del codice; il pair programmming inoltre ha aiutato enormemente nel rispettarlo. Per quanto riguarda la documentazione invece si è cercato di aggiungere dei commenti all'inizio di ogni metodo complesso che specificassero la funzione, i parametri in ingresso e i risultati ritornati. Altri commenti invece sono stati inseriti nella parti di codice considerate poco leggibili in modo da aiutare anche un membro esterno al team a capirlo.   
-\section{Estrzione dei dati dai file DXF}
+Lo standard di codifica è stato scelto sempre in funzione della leggibilità e dell'eleganza del codice; il pair programmming inoltre ha aiutato enormemente nel rispettarlo. Per quanto riguarda la documentazione invece si è cercato di aggiungere dei commenti all'inizio di ogni metodo complesso che specificassero la funzione, i parametri in ingresso e i risultati ritornati. Altri commenti invece sono stati inseriti nella parti di codice considerate poco leggibili in modo da aiutare anche un membro esterno al team a capirlo.   
 
+\newpage
+\section{Estrazione dei dati dai file DXF}
 
+La prima parte del progetto Spazi-Unimi ad essere stata sviluppata è quella riguardante la lettura e l'elaborazione delle informazioni estraibili dalle piantine delle sedi universitarie. Come già detto il formato DWG non risultando idoneo ad essere analizzato è stato convertito in un formato DXF grazie all'applicazione free: Teigha® File Converter. 
+Successivamente si è passati all'esplorazione delle librerie Python in grado di leggere tale formato: la scelta è ricaduta sulla libreria dxfgrabber. Grazie alla funzione 'readfile' di tale libreria si può leggere il contenuto di un file DXF (in qualsiasi versione) e salvarlo in una variabile.
+\begin{lstlisting}[label=codice,caption=Lettura di un file DXF con dxfgrabber, frame=single]
+>>> dxf = dxfgrabber.readfile("File.dxf")
+>>> dxf
+<dxfgrabber.drawing.Drawing object at 0x7f72d5eef898>
+\end{lstlisting}
 
+Tale oggetto rispecchia la struttura dei file DXF quindi a noi è bastato leggere la sezione ENTITIES la quale contiene gli oggetti disegnati in tale file.
+\begin{lstlisting}[label=codice,caption=Salvataggio delle entità di un file DXF, frame=single]
+>>> entities = dxf.entities
+>>> entities
+<dxfgrabber.entitysection.EntitySection object at 0x7f72d608b550>
+>>> len(entities)
+7850
+\end{lstlisting}
+
+Come si può notare dal codice preso come esempio ogni piantina contiene migliaia di entità e non tutte sono utili agli scopi del progetto. La scrematura di tali entità è stata fatta grazie ad una caratteristica comune dei disegni CAD: la suddivisione di tali entità in gruppi detti layer. Ogni layer dei file DXF forniti rappresenta un tipo di oggetto ben distinto; dopo un'attenta analisi di tali layer sono stati isolati i più utili:
+\begin{itemize}
+\item 'RM\$', in esso sono contenuti i contorni delle stanze salvati come Polyline (o nella variante LWPolyline);
+\begin{lstlisting}[label=codice,caption=Analisi del layer 'RM\$', frame=single]
+>>> rm = [e for e  in entities if e.layer == "RM$"]
+>>> rm[0]
+<dxfgrabber.entities.Polyline object at 0x7f72d346f9e8>
+\end{lstlisting}
+
+\item 'NLOCALI', contiene le etichette con il codice identificativo di ogni stanza memorizzate come Text (o MText) e linee (per il contorno dei testi);
+\begin{lstlisting}[label=codice,caption=Analisi del layer 'NLOCALI', frame=single]
+>>> nloc = [e for e  in entities if e.layer == "NLOCALI" 
+            and e.dxftype in ["TEXT", "MTEXT"]]
+>>> nloc[0]
+<dxfgrabber.entities.Text object at 0x7f72d4afa198>
+\end{lstlisting}
+
+\item 'RM\$TXT', contiene le etichette con il codice identificativo di ogni stanza, la categoria di appartenenza di tale stanza e altre info utili alla Divisione Manutenzione edilizia e impiantistica come la metratura, in questo caso le etichette sono solo di tipo Text (o MText).
+\begin{lstlisting}[label=codice,caption=Analisi del layer 'RM\$TXT', frame=single]
+>>> txt = [e for e  in entities if e.layer == "RM$TXT"]
+>>> txt[0]
+<dxfgrabber.entities.Text object at 0x7f72d345b400>
+\end{lstlisting}
+
+\end{itemize}
+
+Una volta capito come analizzare e salvare le entità di nostro interesse è stato necessario creare delle classi (nel package 'model') che rappresentassero queste entità e che fornissero dei metodi utili per trasformarle. 
+La prima classe definita è stata la base per le altre e trattandosi di rappresentare oggetti disegnabili non poteva che essere Point. 
+Un oggetto Point è creabile passando due numeri (interi o float) che rappresentano le coordinate sul piano cartesiano di tale punto. 
+In tale classe sono stati poi implementati dei metodi di trasformazione utili a dei punti come: traslazione e applicazione di un fattore di scala.
+
+Il passo successivo è consistito nel definire altre tipologie di oggetti che rispecchiassero i dati utili letti dalle entità dei DXF; le classi create sono state:
+\begin{itemize}
+\item Polygon, definibile come una collezione di punti ordinata che collegati formano un poligono;
+\item Text, un testo con un punto che indica la posizione in cui deve essere posto.
+\end{itemize}
+
+Analizzando la struttura di tali classi ci si è resi conto che si sarebbero potute rappresentare come oggetti con un punto di ancoraggio: per il testo il punto di posizione mentre per il poligono l'origine. 
+Scegliendo però un punto che non fosse l'origine e relativizzando i Point che definiscono un Polygon si possono effettuare certe trasformazioni in maniera molto più semplice. Si è quindi definito un anchor\_point per ogni poligono calcolabile come il punto più in basso e più a sinistra del più piccolo rettangolo contenete il poligono (bounding box). 
+In questo modo la traslazione di un Polygon si applica solo traslando il suo anchor\_point senza andare a modificare tutti i punti che lo compongono. 
+L'evoluzione naturale è stata la definizione di una classe Anchorable dalla quale Polygon e Text ereditano: in questo modo tutti i metodi che implementano le trasformazioni sugli anchor\_point di un oggetto sono definiti nello stesso luogo.
+
+Definite le classi per gli oggetti base si è passati all'implementazione di classi che contenessero tali oggeti: la prima e basilare è Room.
+Un oggetto di tipo Room ha il compito di astrarre ciò che definisce una stanza quindi sarà composto da:
+\begin{itemize}
+\item un oggetto di tipo Polygon che rappresenti il contorno di tale stanza;
+\item uno o più oggetti di tipo Text che indichino il contenuto delle etichette associate a tale stanza;
+\item un Point che rappresenta il punto di ancoraggio di tale Room in modo da relativizzare tutti gli altri punti della stanza.
+\end{itemize}
+
+Giunti a questo punto però ci si è resi conto che Polygon e Room rispetto agli altri tipi di oggetti definiti avevano una particolarità: essendo bidimensionali erano gli unici a poter essere disegnati.
+Il passo successivo è stato definire la classe Drawable da cui i poligoni e le stanze potessero ereditare metodi comuni come le trasformazioni e il calcolo del bounding\_box.
+I metodi di trasformazione sugli oggetti Drawable non vengono effettuati direttamente: lasciando la responsabilità alle singole classi viene richiamata la trasformazione corrispondente su ogni entità appartenente agli oggetti da modificare.
+
+L'ultima classe del package 'model' definita prima dell'effettiva lettura dei file DXF è stata Floor. Un'istanza di tale classe rappresenta un piano di un edificio e come tale oltre ad essere una collezione di Room deve possedere anche informazioni sull'edificio a cui appartiene e sul piano che rappresenta.
+
+Tutte le classi definite in 'model' possiedono due metodi particolari:
+\begin{itemize}
+\item to\_serializable(), ritorna un oggetto di tipo json (un dizionario) che rappresenta l'oggetto su cui è stato richiamato il metodo;
+\item from\_serializeble(json), riceve un oggetto di tipo json e da esso crea un'istanza della classe usando le informazioni contenute.
+\end{itemize}
+
+Il passo successivo è stato definire una classe dxf\_reader in grado di leggere i dati da un file DXF e creare un Floor contenente tutti i dati utili.
+Dopo aver letto il file con dxfgrabber come visto in precedenza viene richiamata una funzione (\_extract\_entities()) che scrorre la lista di entità lette e controlla se appartengono alla tipologia e ai layer di nostro interesse.
+I testi trovati vengono salvati in un'apposita lista mentre per quanto riguarda le polyline delle stanze vengono sottoposte ad alcune operazioni prima di venire immagazzinate:
+\begin{itemize}
+\item viene creato un oggetto di tipo Polygon con i punti della polyline trovata;
+\item viene controllato che il poligono sia chiuso, se non lo è viene scartato;
+\item vengono uniti i punti troppo vicini in un unico punto così da semplificare il disegno finale;
+\item viene controllato tramite un apposito algoritmo che il poligono non sia di forme problematiche (si controlla che due segmenti non adiacenti non si intersechino) in caso contrario viene scartato;
+\item viene istanziato un oggetto di tipo Room semplicemente passando al costruttore il poligono controllato e semplificato.
+\end{itemize}
+
+L'oggetto di tipo Room risultante viene salvato nella lista di stanze letta e passato al costruttore del Floor. La lista di testi letti invece deve ancora essere elaborata: ogni testo deve venire associato alla stanza che contiene il suo punto di ancoraggio, se non viene associato a nessuna allora è scratato.
+Il metodo associate\_room\_texts(texts) della classe Floor scorre i testi e controlla a quale Room associare un testo utilizzando un algoritmo che indica se un punto è contenuto in un poligono. 
+Tale algoritmo non è risultato banale quindi dopo un'esplorazione di procedure già esistenti si è deciso di utilizzare il "Ray casting algorithm": l'idea di base è quella che se un punto è all'interno di un poligono una retta che parte da lui intersecherà un numero dispari di volte il perimetro del poligono. Nel caso in cui il punto interseca un numero pari di volte invece si può dire che non è contenuto nel poligono a meno di casi particolari come le intersezioni con i vertici.
+
+\begin{lstlisting}[label=codice,caption=Ray casting algorithm in pseudocodice, frame=single]
+count = 0
+# Per ogni lato del poligono
+for side in polygon:
+# Controlla se la retta partente da P interseca con il lato
+    if ray_intersects_segment(P,side) then
+        count = count + 1
+# Se il numero di intersezioni e' pari il punto e' all'interno
+if is_odd(count) then    
+    return inside
+else
+    return outside
+\end{lstlisting}
+
+A questo punto il nostro oggetto di tipo Floor contiene una lista di Room che a loro volta contengono i testi compresi nel loro Polygon. 
+Vi è però una criticità dovuta a come sono state disegnate le piantine degli edifici: ogni disegno non si posiziona mai nello stesso punto degli altri rispetto all'origine e la scala con cui gli elementi sono stati disegnati non risulta essere sempre simile. 
+Per questo motivo la classe Floor implementa un metodo normalize() da richiamare dopo aver aggiunto gli elementi al piano. 
+Questo metodo di occupa di traslare tutti gli oggetti del piano in modo da avere il punto minimo (sia per l'asse x che per quella y) del bounding box generale nell'origine. 
+Il piano viene quindi ridimensionato in modo che abbiano tutti dimensioni simili: per fare ciò viene calcolato un fattore di scala da applicare per fare in modo che le dimensioni massime siano 1024 * 1024.
+
+Il nostro Floor si può considerare completo a meno delle informazioni sulla sua identificazione: il codice del palazzo a cui appartiene e il codice che identifica di che piano si tratti. 
+Il codice del palazzo definito per semplicità come building\_id (abbreviato b\_id) viene estratto in maniera semplice dal nome del file DXF processato: applicando una espressione regolare si estrae la prima parte del nome che secondo convenzione è proprio il nostro b\_id. 
+Per quanto riguarda l'identificazione del piano (floor\_id o f\_id) invece il processo è più complicato in quanto la convenzione di farlo seguire al b\_id nel nome del file non è stata sempre seguita e molti identificatori risultano errati. 
+Per evitare una correzione manuale di tutti gli errori presenti nei file a disposizione la soluzione adottata ha riguardato l'implementazione di una classe apposita 'floor\_inference' con lo scopo di implementare una procedura che cerchi di ricavare il corretto f\_id.
+La procedura si occupa di ricavare dal DXF letto i dati del layer 'CARTIGLIO' nel quale sono contenute le informazioni riguardanti ciò che è stato disegnato nella cartina (nome del palazzo, disegnatore, data...) tra cui il nome del piano.
+Controllando quali testi contenessero la parola 'PIANO' o quali fossero vicini a tale parola è stata ricavata per ogni file una lista non troppo lunga di possibili nomi di piano.  
+Il passo successivo è stata la creazione di un file floor\_inference.json che contenesse un dizionario in cui:
+\begin{itemize}
+\item le chiavi sono gli identificatori da noi creati per i piani salvati come stringhe;
+\item nella chiave floor\_name sono indicati i nomi dei piani uniformati;
+\item nella chiave suffix\_regex sono riportate le espressioni regolari per i suffissi dei nomi dei file che corrispondono al piano;
+\item nella chiave name\_regex sono presenti sempre espressioni regolari ma da applicare alla lista di stringhe ricavate dal cartiglio.
+\end{itemize}
+
+\begin{lstlisting}[label=codice,caption=Esempio del dizionario in floor\_inference.json, frame=single]
+"03" : {
+      "floor_name": "Rialzato Piano Terra",
+      "suffix_regex": ["^r[ap\\.]?$"],
+      "name_regexes": [ "^rialzato$" ]
+   },
+   "05" : {
+      "floor_name": "Mezzanino Piano Terra",
+      "suffix_regex": ["^a[pr]$", "^arp?$"],
+      "name_regexes": [ "^ammezzato$", "^ammezzato rialzato$", "^ammezzato terra$" ]
+   },
+   "10" : {
+      "floor_name": "Primo Piano",
+      "suffix_regex": ["^p?1[ap]?\\.?$"],
+      "name_regexes": ["^primo$", "^(piano\\s+)primo", "^primo(\\s+piano)" ]
+   },
+\end{lstlisting}
+
+Applicando le espressioni regolari corrispondenti ai suffissi nel nome e alle stringhe nel cartiglio la procedura ricava nella maggior parte dei casi due floor\_id anche se in alcuni casi (doppio cartiglio) può ricavarne di più. 
+I controlli effettuati sui floor\_id sono i seguenti:
+\begin{itemize}
+\item se solo un f\_id è stato trovato utilizza quello;
+\item se sono stati trovati 2 f\_id corrispondenti utilizza uno dei due indifferentemente;
+\item se i due f\_id trovati sono diversi stampa un messaggio per avvisare l'utente ma utilizza quello ricavato dal cartiglio dato che è ritenuto più affidabile;
+\item se sono presenti più cartigli con f\_id diversi utilizza quello uguale al f\_id ricavato dal suffisso del nome stampando un messaggio;
+\item se i f\_id ricavati dai cartigli non corrispondono con quello ricavato dal nome (o quest'ultimo non  è presente) stampa un messaggio di errore e scarta il piano;
+\item se non sono stati trovati f\_id in nessuna fonte stampa un errore e scarta il piano.  
+\end{itemize}
+
+In questo si riesce a ricavare sia il building\_id che il floor\_id dal file DXF: questi dati vengono perciò passati al costruttore del Floor insieme alla lista di Room andando a creare così un oggetto contenete tutti i dati letti dalla piantina.
+
+\newpage
 \section{Estrazione dei dati dai file CSV}
 
+\newpage
 \section{Salvataggio dei dati in MongoDB}
 
 
@@ -234,18 +395,25 @@ Lo standard di codifica è stato scelto semre in funzione della leggibilità e d
 
 \section{Data Integration: teoria e possibili utilizzi}
 
+\newpage
 \section{Analisi dei dati (da DXF e CSV)}
 
+\newpage
 \section{Definizione di un sistema non dipendente dall'ordine di esecuzione}
 
+\newpage
 \section{Strategie di merging dei dati adottate}
 
+\newpage
 \section{Possibili miglioramenti}
 
+\newpage
 \section{Reporting degli errori e delle criticità}
 
+\newpage
 \section{Indirizzo ben formato: teoria e possibile utilizzo}
 
+\newpage
 \section{Definizione di un DBAnalysis per avere statistiche specifiche sul Merge}
 
 
@@ -254,10 +422,13 @@ Lo standard di codifica è stato scelto semre in funzione della leggibilità e d
 
 \section{Definizione di API}
 
+\newpage
 \section{Statistiche sui tempi di calcolo e di risposta del DB}
 
+\newpage
 \section{Considerazioni sullo sviluppo del progetto}
 
+\newpage
 \section{Miglioramenti/crescita dal lato personale}
 
 
