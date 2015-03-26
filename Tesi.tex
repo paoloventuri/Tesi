@@ -352,7 +352,7 @@ Il passo successivo è stata la creazione di un file floor\_inference.json che c
 \item nella chiave name\_regex sono presenti sempre espressioni regolari ma da applicare alla lista di stringhe ricavate dal cartiglio.
 \end{itemize}
 
-\begin{lstlisting}[label=codice,caption=Esempio del dizionario in floor\_inference.json, frame=single]
+\begin{lstlisting}[label=codice,caption=Esempio del dizionario in "'floor\_inference.json'", frame=single]
 "03" : {
       "floor_name": "Rialzato Piano Terra",
       "suffix_regex": ["^r[ap\\.]?$"],
@@ -385,6 +385,83 @@ In questo si riesce a ricavare sia il building\_id che il floor\_id dal file DXF
 
 \newpage
 \section{Estrazione dei dati dai file CSV}
+
+I dati ricevuti sulle aule come scritto in precedenza erano in formato XLS che per comodità si è deciso di convertire in CSV: una tipologia di file di testo rappresentante una tabella.
+In questo formato nella prima linea sono indicati i nomi delle colonne mentre in quelle successive sono inseriti i dati. Le varie colonne sono separate da un carattere specifico che viene deciso in fase di codifica: nel nostro caso si trattava di una virgola (',').
+
+Per la lettura di un file CSV in Python è bastato importare la libreria 'csv' e dopo aver aperto il file lo si può leggere partendo dal primo byte (seek(0))con la funzione 'reader': il risultato deve essere trasformato in un iteratore che fatto scorrere conterrà il file letto riga per riga.
+\begin{lstlisting}[label=codice,caption=Lettura di un file CSV, frame=single]
+>>> csvfile = open("file.csv")
+>>> csvfile
+<_io.TextIOWrapper name='file.csv' mode='r' encoding='UTF-8'>
+>>> csvfile.seek(0)
+0
+>>> reader = csv.reader(csvfile, "excel")
+>>> reader
+<_csv.reader object at 0x7fc86bd0bcf8>
+>>> it = iter(reader)
+>>> it
+<_csv.reader object at 0x7fc86bd0bcf8>
+>>> next(it)
+['header_0', 'header_1', 'header_2', 'header_3', 'header_4']
+>>> next(it)
+['line_1-0', 'line_1-1', 'line_1-2', 'line_1-3', 'line_1-4']
+\end{lstlisting}
+
+In questo modo basta leggere il contenuto fino alla fine dell'iteratore per ricavare tutti i dati del file. 
+Per rendere le informazioni lette meglio manipolabili in un futuro sono state memorizzate in una lista di dizionari in cui le chiavi corrispondono ai nomi delle colonne lette (header).
+\begin{lstlisting}[label=codice,caption=Memorizzazione dei dati in un dizionario, frame=single]
+>>> header = [ s.strip() for s in next(it) ]
+>>> content = []
+>>> for line in it:
+        content.append(
+            {
+                c: l.strip() for c, l in zip(header, line)
+            }
+        )
+[ {
+    'header_0' : 'line_1-0', 
+    'header_1' : 'line_1-1', 
+    'header_2' : 'line_1-2', 
+    'header_3' : 'line_1-3', 
+    'header_4' : 'line_1-4'
+} , {
+    'header_0' : 'line_2-0', 
+    'header_1' : 'line_2-1', 
+    'header_2' : 'line_2-2', 
+    'header_3' : 'line_2-3', 
+    'header_4' : 'line_2-4'
+} ]
+\end{lstlisting}
+
+Avendo a disposizione solo 5 tipologie di file CSV da cui leggere i dati si è deciso di non dover indicare ogni volta quale tipo di file si sta processando: la procedura di lettura infatti inferisce la tipologia analizzando l'header letto.
+Salvando nel file di configurazione "general.json" le intestazioni delle 5 tipologie di CSV si è poi andati a controllare quale di esse coincideva (o conteneva) con quella appena letta.
+\begin{lstlisting}[label=codice,caption=Tipologie di header memorizzate in "'general.json'", frame=single]
+"csv_headers" : {
+    "edilizia":{
+        "buildings"       : ["l_b_id", "b_id", "address", "lat", "lon"],
+        "rooms"           : ["r_id", "b_id", "room_name", "capacity",
+                             "l_floor", "cat_name"],
+        "room_categories" : ["cat_id", "cat_name"]
+    },
+    "easyroom":{
+        "buildings"       : ["b_id", "address", "building_name",
+                             "n_floors"],
+        "rooms"           : ["r_id", "b_id", "room_name", "capacity",
+                             "l_floor", "accessibility", "equipments" ]
+    }
+}
+\end{lstlisting}
+
+Dopo aver inferito la tipologia del file l'ultima cosa da fare è applicare un filtro sui dati letti: non tutti infatti sono risultati utili al progetto e perciò sono state selezionate solo le colonne ritenute importanti. 
+La scrematura si basa ancora una volta sui dizionari di header in "general.json": è bastato applicare al dizionario ottenuto dalla lettura del CSV una funzione che filtra le chiavi.
+\begin{lstlisting}[label=codice,caption=Definizione della funzione filter\_keys, frame=single]
+def filter_keys(d, valid_keys):
+   return { k: d[k] for k in d if k in valid_keys }
+\end{lstlisting}
+
+
+
 
 \newpage
 \section{Salvataggio dei dati in MongoDB}
