@@ -17,16 +17,22 @@
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{caption}
+\graphicspath{ {./Images/} }
+%Figure con bordo
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
 
 % per le accentate
 \usepackage[utf8]{inputenc}
+
 %
 \newtheorem{myteor}{Teorema}[section]
 %
 \newenvironment{teor}{\begin{myteor}\sl}{\end{myteor}}
 %
 %
-%			TITOLO
+%           TITOLO
 %
 \begin{document}
 \renewcommand{\baselinestretch}{1.4}      % interline spacing
@@ -316,7 +322,7 @@ I testi trovati vengono salvati in un'apposita lista mentre per quanto riguarda 
 
 L'oggetto di tipo Room risultante viene salvato nella lista di stanze letta e passato al costruttore del Floor. La lista di testi letti invece deve ancora essere elaborata: ogni testo deve venire associato alla stanza che contiene il suo punto di ancoraggio, se non viene associato a nessuna allora è scratato.
 Il metodo associate\_room\_texts(texts) della classe Floor scorre i testi e controlla a quale Room associare un testo utilizzando un algoritmo che indica se un punto è contenuto in un poligono. 
-Tale algoritmo non è risultato banale quindi dopo un'esplorazione di procedure già esistenti si è deciso di utilizzare il "Ray casting algorithm": l'idea di base è quella che se un punto è all'interno di un poligono una retta che parte da lui intersecherà un numero dispari di volte il perimetro del poligono. Nel caso in cui il punto interseca un numero pari di volte invece si può dire che non è contenuto nel poligono a meno di casi particolari come le intersezioni con i vertici.
+Tale algoritmo non è risultato banale quindi dopo un'esplorazione di procedure già esistenti si è deciso di utilizzare il '"Ray casting algorithm"' \footnote{http://en.wikipedia.org/wiki/Point\_in\_polygon\#Ray\_casting\_algorithm}: l'idea di base è quella che se un punto è all'interno di un poligono una retta che parte da lui intersecherà un numero dispari di volte il perimetro del poligono. Nel caso in cui il punto interseca un numero pari di volte invece si può dire che non è contenuto nel poligono a meno di casi particolari come le intersezioni con i vertici.
 
 \begin{lstlisting}[label=codice,caption=Ray casting algorithm in pseudocodice, frame=single]
 count = 0
@@ -462,24 +468,120 @@ def filter_keys(d, valid_keys):
 
 
 
-
-\newpage
-\section{Salvataggio dei dati in MongoDB}
-
-
-\chapter{Integrazione e validazione delle diverse fonti di dati edilizi}
+\chapter{Integrazione e validazione dei dati edilizi}
 \label{cap2}
 
-\section{Data Integration: teoria e possibili utilizzi}
+\section{Tecniche di definizione del DBMS del progetto Spazi-Unimi}
+
+La fase successiva del progetto ha riguardato la definizione di un DBMS (Database Management System) cioè l'insieme dei programmi software che hanno lo scopo di gestire l'organizzazione, la memorizzazione e il rendere disponibili i dati per quanto riguarda un database.
+
+L'uso dei database e il loro sviluppo sono andati di pari passo con il progresso in ambito informatico: già negli anni 60 infatti cominciarono ad essere sviluppate e introdotte le prime tipologie di basi di dati cioè i database navigazionali. 
+Questa tipologia si basava sulla navigazione dei dati in maniera manuale: ogni dato era connesso con un altro e per reperirlo bastava inserire il giusto percorso; i database navigazionali erano perciò divisibili in due categorie: quelli a rete e quelli gerarchici.
+Alla fine degli anni 60 cominciarono ad affermarsi i primi hard disk e ciò portò i database navigazionali, fin lì memorizzati su nastri magnetici, ad essere considerati inefficienti. 
+Edgar F. Codd nel 1970 pubblicò " A Relational Model of Data for Large Shared Data Banks" un articolo in cui proponeva una nuova tipologia di database basata su tabelle il cui contenuto si poteva manipolare con un linguaggio dedicato.
+Lo sviluppo di queste idee portò negli anni a quello che tutt'oggi è il modello di database più utilizzato cioè il relazionale mentre il linguaggio che è stato sviluppato è l'SQL (Structured Query Language).
+Negli anni 80 si svilupparono i primi database ad oggetti che memorizzano i dati in forma di oggetti proprio come nell'OOP (Object Oriented Programming).
+Questo continuo svilupparsi e crescere dei database è dovuto alla sempre crescente mole di dati che si vuole memorizzare cercando però di mantenere le prestazioni ottimali. 
+
+Il Data Menagement è la disciplina che si occupa di tutte le operazioni utili al funzionamento di un database: dall'inserimento dei dati fino alla loro rimozione passando per tutte le possibili trasformazioni intermedie.
+Nel caso del nostro progetto la fase più complessa è consistita proprio nell'inserimento dei dati nel DB cercando di uniformarli ed unirli tra loro. 
+Le tecniche di Data Management che sono state utilizzate quindi sono state principalmente: il Data Filtering, il Data Validation e il Data Integration.
+
+Il Data Filtering è una tecnica che consiste nel filtrare considerati i dati non utili e perciò da non memorizzare nel database.
+Per fare ciò bisogna innanzitutto analizzare i dati e capire quali scartare perché considerati inutili dal sistema e quali perché forniscono informazioni talmente errate da poter essere considerate dannose dalla percezione dell'utente finale.
+
+Il Data Validation è il processo che si occupa di rendere i dati disponibili corretti e utilizzabili dalle applicazioni dipendenti da essi: per fare ciò si deve definire un livello minimo di qualità del dato da rispettare. 
+Tale qualità non è sempre semplice da definire e nel nostro specifico caso può essere descritta tramite tre proprietà:
+\begin{itemize}
+\item l'accuratezza, cioè la una misura di quanto un dato si avvicina al valore considerato corretto;
+\item la completezza, indica la quantità dei dati disponibili rispetto al totale, può essere rappresentata perciò come una percentuale;
+\item la consistenza, cioè la proprietà di un dato di non entrare in conflitto con un altro, nel progetto si è avuta soprattutto per dati provenienti da fonti diverse.
+\end{itemize}
+
+Il Data Integration è il processo di Data Management che si occupa di manipolare i dati, provenienti anche da più fonti, così da uniformarli e prepararli alla memorizzazione nel database.
+
+La teorizzazione dell'integrazione dei dati è iniziata negli anni 80 e prevedeva l'interoperabilità tra diversi database\footnote{John Miles Smith (1982): "Multibase: integrating heterogeneous distributed database systems"}.
+Bisogna aspettare però fino al 1991 per avere il primo sistema di Data Integration dipendente dai metadati: l'università del Minnesota infatti definì tale sistema per l'IPUMS (Integrated Public Use Microdata Series) cioè il database contenete i dati di ogni censimento degli Stati Uniti dal 1850 al 2000. 
+Il Data Integration System implementato per l'IMPUMS si basa su un approccio ETL (Extract, Transform, Load) e fa confluire i dati finali in un database basato sul Data Warehouse.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=280pt]{ETL+Datawarehouse.jpg}
+    \caption{Sistema di Data Integration basato sull'approccio ETL con memorizzazione in Data Warehouse}
+    \label{fig:ETL_Datawarehouse}
+\end{figure}
+
+
+L'approccio ETL è composto, come dice il nome, da tre fasi distinte:
+\begin{itemize}
+\item estrazione, consiste nel ricavare dalle varie fonti (file, database, etc..) i dati utili al processo, nel nostro caso si tratta delle informazioni estratte in precedenza dai file CSV e DXF;
+\item trasformazione, cioè l'applicazione di tutte le trasformazioni utili ai dati affinché possano essere utilizzati dall'utente finale, per il processo da noi sviluppato si tratta di applicare le procedure descritte in precedenza (Data Filtering e Data Validation) e di definire una nuova procedura per l'unificazione dei dati;
+\item caricamento, si intende la memorizzazione dei dati provenienti dalla fase di trasformazione in un database definibile per la maggior parte dei casi come un Data Warehouse.
+\end{itemize}
+
+
+Con il termine Data Warehouse si vuole definire un archivio di dati informatico (database) il quale memorizza le informazioni inerenti a un'azienda o ad un'organizzazione.
+L'approccio del Data Integration basato su ETL e Data Warehouse pur essendo molto intuitivo e di vecchia concezione risulta tutt'oggi adatto ad essere implementato in sistemi che non richiedono un aggiornamento frequente dei dati.
+
+Negli ultimi anni la tendenza per quanto riguarda i meccanismi di Data Integration è cambiata: grazie alle nuove tecnologie gli accessi a database, anche remoti, risultano molto più veloci e le applicazioni moderne si basano per lo più su dati in continua evoluzione e sempre aggiornati.
+Ciò viene definito architettura con schema globale ed ha portato ad un minor impiego della logica ETL e ad un maggior utilizzo di interrogazioni (query) combinate di più database.
+In questo modo si viene e creare un database virtuale i cui dati sono gli stessi dei database reali: tali informazioni vengono reperite ed elaborate in tempo reale tramite wrapper (involucro).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=280pt]{Dataintegration+Wrapper.jpg}
+    \caption{Architettura con schema globale: Data Integration basato su un approccio di Database virtuale e wrapper}
+    \label{fig:Data_Integration_Wrapper}
+\end{figure}
+
+Il ruolo del wrapper in questo tipo di sistemi è riconducibile all'Adapter Pattern: il suo scopo è quello di rendere possibile la comunicazione tra due componenti le cui interfacce non corrispondono.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=280pt]{Adapter.jpg}
+    \caption{Class Diagram UML dell'Adapter Pattern}
+    \label{fig:Adapter_Pattern}
+\end{figure}
+
+L'architettura con schema globale può essere definita in due modalità base:
+\begin{itemize}
+\item GAV (Global As View), in cui lo schema globale vien espresso in base agli schemi delle sorgenti;
+\item LAV (Local As View), dove lo schema globale è indipendente dalle sorgenti e la relazione con ognuna di esse è definita tramite delle view. 
+\end{itemize}
+
+L'approccio GAV è di più immediata realizzazione ma in caso di cambiamenti nelle fonti, come l'aggiunta di una nuova sorgente, risultano complesse le modifiche da apportare.
+Viceversa il LAV favorisce le possibili estensioni rispetto a nuove sorgenti ma risulta più complicato definire le query utili alla sua definizione.     
+
+Per GLAV (Global and Local As View) si intende un ibrido tra le due strategie appena descritte: in questo caso la relazione tra le sorgenti e lo schema globale è stabilita attraverso delle view, alcune definite sullo schema globale e alcune sulle sorgenti.
+
+Dato che il progetto Spazi-Unimi prevede di operare su dati edilizi i quali risultano statici a meno di rare variazioni (ad esempio un cambio di sede per un dipartimento) si è deciso di implementare un sistema ETL che definisce un database di tipo Data Warehouse.
+
 
 \newpage
 \section{Analisi dei dati (da DXF e CSV)}
 
 \newpage
-\section{Definizione di un sistema non dipendente dall'ordine di esecuzione}
+\section{Salvataggio dei dati in MongoDB}
+
+Una volta definite le classi con lo scopo di leggere i dati dalle due tipologie di file a disposizione si è deciso di implementare un programma principale ('main') dal quale richiamare con gli appositi comandi il processamento dei file.
+I comandi implementati sono stati:
+\begin{itemize}
+\item dxf file.dxf, al comando dxf si passa uno o più file DXF da processare;
+\item csv file.csv, il comando csv come l'altro può ricevere uno o più file di tipologia corretta. 
+\end{itemize}
+
+Tali comandi dopo avere controllato l'estensione e la presenza dei file indicati istanziano un apposito 'task': il compito di tali classi ("DXFTask" e "CSVTask") è quello di richiamare tutte le operazioni da effettuare sui file.
+La prima operazione da effettuare è la lettura e per fare ciò viene richiamata la classe corrispondente ("DXFReader" o "CSVReader"). 
+Una volta letti i dati dai file non resta che salvarli nel database; per fare ciò bisogna prima definire una struttura per i file BSON che andremo ad inserire i MongoDB.
+Si è deciso di salvare le informazioni in una collection Building in cui usare il building\_id come identificatore per i documenti.
+
+
 
 \newpage
 \section{Strategie di merging dei dati adottate}
+
+\newpage
+\section{Definizione di un sistema non dipendente dall'ordine di esecuzione}
 
 \newpage
 \section{Possibili miglioramenti}
@@ -494,7 +596,7 @@ def filter_keys(d, valid_keys):
 \section{Definizione di un DBAnalysis per avere statistiche specifiche sul Merge}
 
 
-\chapter{Considerazioni finali e presentazione dei risultati}
+\chapter{Considerazioni finali e risultati}
 \label{cap3}
 
 \section{Definizione di API}
