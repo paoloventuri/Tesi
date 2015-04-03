@@ -459,14 +459,6 @@ Salvando nel file di configurazione "general.json" le intestazioni delle 5 tipol
 }
 \end{lstlisting}
 
-Dopo aver inferito la tipologia del file l'ultima cosa da fare è applicare un filtro sui dati letti: non tutti infatti sono risultati utili al progetto e perciò sono state selezionate solo le colonne ritenute importanti. 
-La scrematura si basa ancora una volta sui dizionari di header in "general.json": è bastato applicare al dizionario ottenuto dalla lettura del CSV una funzione che filtra le chiavi.
-\begin{lstlisting}[label=codice,caption=Definizione della funzione filter\_keys, frame=single]
-def filter_keys(d, valid_keys):
-   return { k: d[k] for k in d if k in valid_keys }
-\end{lstlisting}
-
-
 
 \chapter{Integrazione e validazione dei dati edilizi}
 \label{cap2}
@@ -560,22 +552,88 @@ Dato che il progetto Spazi-Unimi prevede di operare su dati edilizi i quali risu
 \newpage
 \section{Analisi dei dati (da DXF e CSV)}
 
-\newpage
-\section{Salvataggio dei dati in MongoDB}
+Volendo applicate l'approccio ETL del Data Integration e avendo già effettuato l'estrazione dei dati dai file forniti ci si è concentrati sulla fase di trasformazione nella quale bisogna innanzitutto applicare il Data Filtering e il Data Validation.
+Per utilizzarli in maniera efficace la prima operazione da fare è un'analisi approfondita delle informazioni provenienti dalle varie fonti per capire i livelli di accuratezza, completezza e consistenza dei dati.
 
-Una volta definite le classi con lo scopo di leggere i dati dalle due tipologie di file a disposizione si è deciso di implementare un programma principale ('main') dal quale richiamare con gli appositi comandi il processamento dei file.
-I comandi implementati sono stati:
+L'analisi è stata effettuata innanzitutto sui file CSV forniti dalla Divisione Manutenzione edilizia e impiantistica: il file degli edifici, quello delle aule ed infine il file sulle categorie delle stanze.
+Il file degli edifici contiene i seguenti dati per ogni edificio rappresentato:
 \begin{itemize}
-\item dxf file.dxf, al comando dxf si passa uno o più file DXF da processare;
-\item csv file.csv, il comando csv come l'altro può ricevere uno o più file di tipologia corretta. 
+\item legacy\_building\_id, cioè l'identificatore del vecchio standard per il palazzo, è presente per ogni edificio;
+\item building\_id, il nuovo identificatore di palazzo, è presente solo per gli edifici che hanno messo in pratica il nuovo standard di identificazione cioè il 83,7 \% (206 su 246);
+\item address, l'indirizzo è sempre presente per ogni edificio ma non viene utilizzato sempre lo stesso standard di codifica e molti risultano poco utilizzabili (ad esempio: "LODI OSPEDALE VETERINATRIO Ed. 1");
+\item lat e lon, le coordinate dell'edificio non indicano sempre lo stesso posto per ogni edificio (ad esempio l'ingresso) e non sono presenti in 51 edifici cioè nel 20,7 \% dei casi.
 \end{itemize}
 
-Tali comandi dopo avere controllato l'estensione e la presenza dei file indicati istanziano un apposito 'task': il compito di tali classi ("DXFTask" e "CSVTask") è quello di richiamare tutte le operazioni da effettuare sui file.
-La prima operazione da effettuare è la lettura e per fare ciò viene richiamata la classe corrispondente ("DXFReader" o "CSVReader"). 
-Una volta letti i dati dai file non resta che salvarli nel database; per fare ciò bisogna prima definire una struttura per i file BSON che andremo ad inserire i MongoDB.
-Si è deciso di salvare le informazioni in una collection Building in cui usare il building\_id come identificatore per i documenti.
+Il file CSV contente le informazioni sulle aule didattiche della divisione edilizia contiene:
+\begin{itemize}
+\item building\_id, corrispondente a uno di quelli del file degli edifici, tale dato è sempre presente per ogni aula e risulta utilissimo per definire in che palazzo si trova;
+\item address, informazione ridondante rispetto al file precedente, è sempre presente per ogni aula;
+\item legacy\_floor, identificativo proprio della divisione edilizia per indicare in che piano si trova l'aula, l'informazione è sempre presente ma non è di immediata lettura e il livello di accuratezza si può verificare solo controllando stanza per stanza sulle piantine fornite;
+\item room\_id, identificativo dell'aula risulta univoco solo all'interno di uno stesso palazzo, è sempre presente e combinandolo con il building\_id puù fornire una chiave per l'identificazione della stanza;
+\item cat\_name, definisce la destinazione d'uso della stanza, è sempre presente anche se in questo file sono contenuti solo i dati delle aule didattiche (aule, aule informatiche, sale lauree, etc...);
+\item room\_name, indica il nome con cui viene chiamata la stanza, è molto utile dal lato utente dato che verrà sicuramente usato per la ricerca di aule di interesse, il dato è presente nel 90,8 \% dei casi (367 aule);
+\item capacity, indica la capienza dell'aula ed è presente nel 93 \% dei casi (376 aule su 404);
+\item area, indica la superficie della stanza in metri quadrati, non risulta molto utile agli scopi dell'applicazione nonostante il dato sia presente in quasi tutte le stanze rappresentate;
+\item buiding\_name, indica una denominazione specifica dell'edificio a cui la stanza appartiene, l'informazione risulta poco utile dal lato utente perché spesso contiene nomi utili alla divisione edilizia, il dato è comunque presente nella maggior parte dei casi;
+\item note, informazioni aggiuntive sull'aula, poco presenti e di interesse nullo per gli scopi dell'applicazione.    
+\end{itemize}
+
+L'ultimo file fornito dalla Divisione Manutenzione edilizia e impiantistica è quello sulle categorie delle stanze:
+\begin{itemize}
+\item category\_id, identificatore della categoria utilizzato nelle etichette delle stanze nei file DXF, risulta utilissimo per capire di che tipologia di stanza si sta parlando, è sempre presente per ogni categoria;
+\item category\_name, è il nome "umano"  della categoria di stanza, è sempre presente e fornisce all'utente una denominazione comprensibile delle tipologie di aule.
+\end{itemize} 
+
+La fase successiva è stata l'analisi dei CSV forniti dalla Divisione sistemi informativi iniziando sempre da quello degli edifici:
+\begin{itemize}
+\item building\_id, l'identificativo del palazzo in questo caso utilizza sempre la nuova codifica ed è sempre presente anche se 8 edifici su 51 possiedono un identificativo provvisorio dato che non contengono ancora dati precisi;
+\item building\_name, il nome dell'edificio è sempre presente ma è in molti casi troppo generico rispetto alle informazioni fornite dalla divisione edilizia;
+\item address, l'indirizzo manca nel 7,8 \% (4 edifici su 51) dei casi ma risulta ben formato rispetto a quelli forniti dal CSV corrispettivo dell'edilizia;
+\item n\_floor, indica il numero di piani dell'edificio, l'informazione risulta ridondante dato che è riconducibile al numero di file DXF forniti per quel palazzo ma risulta completa anche se poco verificabile;
+\item google\_maps\_address, indica un iframe contente l'indirizzo web della pagina di Google Maps corrispondente al palazzo, da esso si potrebbero ricavare le coordinate ma nonostante siano quasi sempre presenti risulta molto più comodo ottenerle dal CSV dell'edilizia. 
+\end{itemize} 
+
+L'ultimo file CSV da analizzare è stato quello dei sistemi informativi contenete le informazioni sulle aule didattiche da loro conosciute:
+\begin{itemize}
+\item room\_id, in questo caso contiene l'identificatore dell'edificio separato con un '\#' dall'identificatore della stanza, il dato è sempre presente anche se in alcuni casi risulta non rispettato lo standard appena descritto e viene utilizzato un nome per definire l'aula;
+\item room\_name, è il nome umano della stanza, è sempre presente e come per il file CSV corrispettivo risulta molto utile per la ricerca di aule degli utenti;
+\item building\_id, informazione ridondante dato che è contenuta anche dal room\_id, è sempre presente ma come per il file di edifici utilizza anche identificatori provvisori non utilizzabili dall'applicazione;
+\item venue, indica la sede contenete l'aula, è sempre presente ma come in precedenza utilizza nominativi troppo generici rispetto alle informazione dell'edilizia;
+\item capacity, indica la capienza dell'aula, è sempre presente anche se le informazioni fornite dall'edilizia possono sembrare in tale ambito più affidabili;
+\item type, indica la tipologia di grandezza dell'aula classificandola in "Piccola", "Media" o "Grande", l'informazione è sempre presente ma risulta troppo generica e poco utile all'utente finale;
+\item available, indica la possibilità di utilizzarla previa richiesta, il dato è sempre presente ma indica un risposta negativa per ogni aula quindi non risulta utilizzabile;
+\item equipments, lista degli accessori presenti in tale aula (proiettore, pc, lavagna luminosa, etc...), il dato è presente in molte aule e se non presente si può dedurre che la stanza non abbia nessun accessorio;
+\item description, descrizione della destinazione d'uso della stanza, risulta presente in circa la metà dei casi ma è troppo generica (ad esempio: "tradizionale") e non corrisponde quasi mai allo standard utilizzato dall'edilizia;
+\item legacy\_floor, piano in cui si trova l'aula, utilizza uno standard basato sui numeri interi quindi risulta più comprensibile rispetto al dato fornito dall'edilizia, l'informazione non è presente solo per 2 stanze ma risulta difficile dedurne l'affidabilità;
+\item accessibility, indica la possibilità da parte di una persona disabile di accedere alla stanza, è rappresentata con un numero ('0' se non è possibile, '1' se lo è) ed è sempre presente nelle stanze conosciute dalla Divisione sistemi informativi, il dato inoltre è molto utile ai fini degli utenti finali dell'applicazione. 
+\end{itemize}
+
+L'ultima attività di analisi dei dati per il progetto ha riguardato le piantine contenute nei file DXF nei quali le informazioni più importanti oltre a quelle di disegno sono:
+\begin{itemize}
+\item il nome del file nel cui prefisso è indicato il legacy\_building\_id dell'edificio cioè il codice nel vecchio standard;
+\item il piano raffigurato dalla piantina del quale ci si è occupati nella lettura del file;
+\item le etichette contenute nei layer 'NLOCALI' e 'RM\$TXT' riguardanti le aule.
+\end{itemize}  
+
+Nelle etichette di ogni aula sono stati identificati i seguenti dati:
+\begin{itemize}
+\item il room\_id della stanza contenuto in entrambi i layer testuali;
+\item il category\_id della stanza mappabile nel nome della categoria grazie al CVS corrispondente della Divisione Manutenzione edilizia e impiantistica;
+\item la metratura della stanza quasi sempre presente ma di scarso valore per gli scopi dell'applicazione.
+\end{itemize}  
+
+Terminata l'analisi di tutti i dati provenienti dalle varie fonti è stato definito per ogni file CSV l'insieme delle informazioni ritenute utili al progetto: ogni dato non presente in tale insieme è stato quindi scartato.
+
+Dopo aver inferito la tipologia del file CSV viene quindi applicato un filtro che mantiene solo le colonne ritenute importanti. 
+La scrematura si basa ancora una volta sui dizionari di header in "general.json": è bastato applicare al dizionario ottenuto dalla lettura del CSV una funzione che filtra le chiavi.
+\begin{lstlisting}[label=codice,caption=Definizione della funzione filter\_keys, frame=single]
+def filter_keys(d, valid_keys):
+   return { k: d[k] for k in d if k in valid_keys }
+\end{lstlisting}
 
 
+\newpage
+\section{Salvataggio dei dati in MongoDB}
 
 \newpage
 \section{Strategie di merging dei dati adottate}
