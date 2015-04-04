@@ -584,7 +584,7 @@ L'ultimo file fornito dalla Divisione Manutenzione edilizia e impiantistica è q
 \item category\_name, è il nome "umano"  della categoria di stanza, è sempre presente e fornisce all'utente una denominazione comprensibile delle tipologie di aule.
 \end{itemize} 
 
-La fase successiva è stata l'analisi dei CSV forniti dalla Divisione sistemi informativi iniziando sempre da quello degli edifici:
+La fase successiva è stata l'analisi dei CSV forniti dalla Divisione sistemi informativi (EasyRoom) iniziando sempre da quello degli edifici:
 \begin{itemize}
 \item building\_id, l'identificativo del palazzo in questo caso utilizza sempre la nuova codifica ed è sempre presente anche se 8 edifici su 51 possiedono un identificativo provvisorio dato che non contengono ancora dati precisi;
 \item building\_name, il nome dell'edificio è sempre presente ma è in molti casi troppo generico rispetto alle informazioni fornite dalla divisione edilizia;
@@ -631,9 +631,86 @@ def filter_keys(d, valid_keys):
    return { k: d[k] for k in d if k in valid_keys }
 \end{lstlisting}
 
+Il file CSV contenete le categorie delle stanze fornito dall'edilizia presenta dei dati totalmente statici il cui aggiornamento porterebbe ad una revisione totale dei file DXF.
+Tale cambiamento risulta di estrema difficoltà, per tale motivo e anche per la necessità di operare su tali categorie in maniera da poterle rendere più utilizzabili per gli utenti si è deciso di non rendere tali informazioni aggiornabili tramite CSV.
+Utilizzando un file JSON infatti si è riusciti ad avere le stesse informazioni del CSV estese così da poter raggruppare le categorie per gruppi aventi tipo simile e per scopo. 
+Il risultato finale è stato un dizionario avente come chiavi i category\_id e come valori il nome del gruppo di appartenenza (group\_name), la descrizione (category\_name tratta dal file CSV) e lo scopo generico (scope) a cui la stanza è destinata.
+
+\begin{lstlisting}[label=codice,caption=Esempio delle categorie di stanze memorizzate in "'room\_category.json'", frame=single]
+"AUM01" : {
+   "group_name"   : "Aula Seminari - Magna - Lauree",
+   "description"  : "Aula Magna",
+   "scope"        : "didactic"
+},
+"LAB01" : {
+   "group_name"   : "",
+   "description"  : "Laboratorio Didattico",
+   "scope"        : "didactic"
+},
+"SAL04" : {
+   "group_name"   : "Aula Seminari - Magna - Lauree",
+   "description"  : "Sala Lauree",
+   "scope"        : "didactic"
+},
+"SPZ01" : {
+   "group_name"   : "Locale Supporto",
+   "description"  : "Locale di Supporto",
+   "scope"        : "support"
+}
+\end{lstlisting}
+
+In alcuni casi la tipologia di aula data la sua rilevanza non ha permesso il raggruppamento con altre: in questo caso il group\_name è stato lasciato vuoto. 
+
 
 \newpage
 \section{Salvataggio dei dati in MongoDB}
+
+La fase successiva del processo di Data Integration applicato prevederebbe il merge dei dati in modo da poterli caricare sul database e renderli disponibili all'applicazione finale.
+Nel nostro caso però si è deciso di passare per uno step intermedio che prevede la memorizzazione dei dati di ogni edificio in un unico documento ma separati su chiavi diverse in base alla fonte di provenienza.
+Questa scelta è stata fatta in funzione di due fatti:
+\begin{itemize}
+\item MongoDB essendo un database NoSQL prevede un costo in termini di spazio di memorizzazione minore rispetto ai DB classici quindi la ridondanza delle informazioni è un fattore positivo perché spesso evita query complesse;
+\item per effettuare l'unione delle informazioni di un palazzo bisogna attendere che i dati di tutte le fonti siano presenti: ciò nel nostro caso può richiedere molto tempo (se ad esempio una fonte non aggiorna in maniera puntuale i propri file) quindi risulta utile memorizzare i dati separati per poi applicare su di essi il processo di merge.     
+\end{itemize}
+
+Una volta definite le classi con lo scopo di leggere i dati dalle due tipologie di file a disposizione quindi si è deciso di implementare un programma principale ('main') dal quale richiamare con gli appositi comandi il processamento dei file.
+I comandi implementati sono stati:
+\begin{itemize}
+\item dxf file.dxf, al comando 'dxf' si passa uno o più file DXF da processare;
+\item csv file.csv, il comando 'csv' come l'altro può ricevere uno o più file di tipologia corretta. 
+\end{itemize}
+
+Tali comandi dopo avere controllato l'estensione e la presenza dei file indicati istanziano un apposito 'task': il compito di tali classi ('DXFTask' e 'CSVTask') è quello di richiamare tutte le operazioni da effettuare sui file.
+La prima operazione da effettuare è la lettura e per fare ciò viene richiamata la classe corrispondente ('DXFReader' o 'CSVReader'). 
+I risultati della lettura vengono quindi passati alle corrispondenti classi che hanno il compito di aggiornare i dati presenti nel database (o inserirli da capo se è la prima volta). 
+
+Le classi definite per effettuare queste operazioni sono: 'DXFDataUpdater', 'EdiliziaDataUpdater' e 'EasyroomDataUpdater'. 
+La prima si occupa, come indica il nome, di ricevere i risultati del 'DXFReader', cercare il palazzo corrispondente nel database e salvare tali dati nella chiave 'dxf' del documento. 
+Nel caso in cui l'edificio non sia presente nel database viene creato un nuovo documento e salvato nella collection 'building'; se invece il documento è già presente e possiede una chiave 'dxf' con il piano corrispondente esso viene sostituito dai nuovi dati letti.
+Dato che 'DXFReader' ritorna un oggetto di tipo Floor i dati che vengono salvati sono quelli del JSON ottenuto dal suo metodo "to\_serializable()" che ritorna un dizionario. 
+
+Il 'CSVReader' come detto riesce grazie agli header ed inferire la tipologia del file (sorgente e tipo di dati), grazie a ciò il 'CSVTask' istanzia una classe di aggiornamento specifica rispetto alla fonte corrispondente.
+'EdiliziaDataUpdater' si occupa di aggiornare i dati provenienti dai CSV della Divisione Manutenzione edilizia e impiantistica; 'EasyroomDataUpdater' invece si occupa di quelli della Divisione sistemi informativi.
+Entrambi i Data Updater si devono occupare di due possibili input: le informazioni sulle stanze o le informazioni sugli edifici.
+Essendo le operazioni da svolgere su tali informazioni molto simili si è deciso di definire altre due classi che implementassero le funzionalità comuni e da cui i Data Updater ereditassero:
+\begin{itemize}
+\item 'BuildingDataUpdater' si occupa delle operazioni comuni ai dati sugli edifici come trovare i documenti da aggiornare e controllare la validità di dati come il building\_id;
+\item 'RoomDataUpdater' invece oltre a trovare l'edificio in cui salvare i dati e validare il room\_id raggruppa le stanze di uno stesso palazzo in piani, in questo modo sul database avremo per ogni edificio una lista di piani ordinata in cui sono contenute le informazioni delle stanze.
+\end{itemize}
+Altri tipi di operazioni da svolgere prima del salvataggio invece sono diverse in base alla fonte da cui provengono i dati: per questo motivo 'EasyroomDataUpdater' ed 'EdiliziaDataUpdater' sono state mantenute come due classi separate.
+Un esempio è dato dal room\_id di proveniente dalla Divisione sistemi informativi: come detto esso è composto dall'identificatore della stanza e da quello dell'edificio (separati da un '\#'). Avendo già l'informazione sul building\_id presente in un altro campo si è deciso di modificarlo prima del salvataggio filtrandolo per lasciare solo il room\_id.
+ 
+
+La politica che si è voluto implementare per quanto riguarda gli aggiornamenti è detta a 'snapshot': lo stato del database rispecchia quello delle informazioni possedute in quel momento senza andare a memorizzare vecchi dati.
+Questo approccio è stato mantenuto sia per i dati provenienti dai file CSV che dai DXF: ogni chiave ('dxf', 'edilizia', 'easyroom') del documento possiede un valore updated\_at contenete la data precisa di aggiornamento, tale attributo è presente anche per il documento stesso e corrisponde al più recente delle tre possibili chiavi.
+
+Il caso più critico in tale approccio si ha quando un edificio non deve più essere contenuto nel database perché ad esempio non viene più utilizzato dall'università.
+In tale situazione si può fare una semplice assunzione: essendo i file CSV globali essi contengono i dati di ogni edificio perciò se un edificio da rimuover che in uno stato precedente era presente nel nuovo aggiornamento non vi sarà più.
+Controllando l'attributo updated\_at si riesce a capire quali edifici non sono più descritti in un file CSV quindi si può procedere alla rimozione della chiave corrispondente alla fonte aggiornata.
+In un attributo dell'edificio (deleted\_keys) inoltre si provvede a specificare quali chiavi sono state eliminate: in questo modo se 'easyroom' ed 'edilizia' sono sono state rimosse significa che entrambe le fonti concordano sulla cancellazione dei dati e il documento di tale edificio può essere rimosso.
+
+Tutte le operazioni di controllo sugli aggiornamenti e sulla cancellazione di chiavi e documenti sono effettuate dal 'BuildingDataUpadater'.
+La chiave 'dxf' non viene presa in considerazione per quanto riguarda la cancellazione di un edificio dal database in quanto i file da cui provengono tali dati si occupano solo di un piano per volta quindi risulterebbe difficile definire una strategia di cancellazione basata sul loro aggiornamento.    
 
 \newpage
 \section{Strategie di merging dei dati adottate}
@@ -646,9 +723,6 @@ def filter_keys(d, valid_keys):
 
 \newpage
 \section{Reporting degli errori e delle criticità}
-
-\newpage
-\section{Indirizzo ben formato: teoria e possibile utilizzo}
 
 \newpage
 \section{Definizione di un DBAnalysis per avere statistiche specifiche sul Merge}
