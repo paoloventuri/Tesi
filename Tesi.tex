@@ -903,6 +903,55 @@ Anche questa volta la procedura viene richiamata, il risultato posto nella chiav
 \newpage
 \section{Reporting degli errori e delle criticità}
 
+Il progetto Spazi-Unimi oltre a voler realizzare uno strumento utile agli utenti dell'Università degli Studi di Milano ha un secondo scopo: fornire alle sorgenti dei dati un riscontro per quanto riguarda la loro qualità.
+Dovendo gestire grosse moli di informazioni non è semplice trovare e correggere gli errori ma grazie alle operazioni di Data Validation e Data Integration implementate si è riusciti a trovare errori e problemi ricorrenti.
+
+Per fare in modo che gli addetti all'aggiornamento dei dati ricevano anche un riscontro sulla qualità di quello che stanno inserendo nel sistema si è deciso di utilizzare una classe di logging in modo da rendere l'output molto più leggibile per l'utente.
+
+La classe Logger può essere richiamate grazie ad alcuni tipi di funzioni in base al contesto in cui ci si trova:
+\begin{itemize}
+\item info, l'etichetta è di colore blu ed indica cosa sta elaborando in quel momento il sistema o mostra alcuni dati parziali;
+\item warning, l'etichetta arancio viene mostrata in caso di criticità nell'esecuzione di qualche algoritmo, il problema non pregiudica però l'esecuzione;
+\item error, l'etichetta è rossa ed indica un errore grave che il sistema non è in grado di risolvere, l'esecuzione di tale operazione è interrotta e si passa all'iterazione successiva;
+\item success, l'etichetta verde indica la conclusione del programma mostrando le statistiche sui tempi di esecuzione.
+\end{itemize}    
+
+\vspace{5mm} %5mm vertical space
+
+Grazie all'uso di indentazione inoltre si è cercato di rendere l'output più semplice da capire; inoltre l'utente che aggiorna i dati può settare tramite una variabile il livello di verbosità del Logger così da visualizzare solo le informazioni di suo interesse.
+
+Le chiamate alla classe di logging quindi sono utilizzate in maniera esaustiva in tutte le procedure svolte dal sistema in modo da semplificare il compito degli addetti.
+
+\begin{lstlisting}[label=codice,caption=Esempio di output del Logger nel processamento di file DXF, frame=single]
+[info] 0/3 - Processing file assets/dxf/Con audit/5830_1.dxf
+       [warn] Self crossing room is not valid: 
+       Polygon(P(8566.2958, -7802.069))[P(0.0, 125.0), P(312.0, 125.0), 
+       	P(312.0, 315.0), P(136.0, 315.0), P(136.0, 332.0), P(441.0, 332.0), 
+       	P(441.0, 104.0), P(312.0, 104.0), P(312.0, 125.0), P(0.0, 125.0), 
+       	P(0.0, 0.0), P(531.4215, 0.0), P(541.6033, 308.0), P(0.0, 0.0), 
+       	P(0.0, 125.0)]
+       [info] Floor 10 for Building Id: 33110 Legacy id: 
+       	5830 (Via Comelico, 39, Milano)
+              [info] Total rooms found: 69
+              [info] The following rooms have 
+              		been identified: 1024
+              [info] 66 rooms were categorized
+       [ ok ] File processing complete.
+[info] 1/3 - Processing file assets/dxf/Con audit/5830_sez.dxf
+       [fail] It was not possible to identify the floor associated 
+       	to the DXF file
+[info] 2/3 - Processing file assets/dxf/Con audit/5830_ST.dxf
+       [info] Floor 200 for Building Id: 33110 Legacy id: 
+       	5830 (Via Comelico, 39, Milano)
+              [info] Total rooms found: 3
+              [info] 3 rooms were categorized
+       [ ok ] File processing complete.
+[ ok ] Total time     : 15.71898896435699 seconds
+[ ok ] Arithmetic mean: 5.239662987845285 seconds
+
+\end{lstlisting}
+
+
 \newpage
 \section{Definizione del DBAnalysis}
 
