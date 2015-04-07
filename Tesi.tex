@@ -617,9 +617,9 @@ L'analisi è stata effettuata innanzitutto sui file CSV forniti dalla Divisione 
 Il file degli edifici contiene i seguenti dati per ogni edificio rappresentato:
 \begin{itemize}
 \item legacy\_building\_id, cioè l'identificatore del vecchio standard per il palazzo, è presente per ogni edificio;
-\item building\_id, il nuovo identificatore di palazzo, è presente solo per gli edifici che hanno messo in pratica il nuovo standard di identificazione cioè il 83,7 \% (206 su 246);
+\item building\_id, il nuovo identificatore di palazzo, è presente solo per gli edifici che hanno messo in pratica il nuovo standard di identificazione cioè il 83,7\% (206 su 246);
 \item address, l'indirizzo è sempre presente per ogni edificio ma non viene utilizzato sempre lo stesso standard di codifica e molti risultano poco utilizzabili (ad esempio: "LODI OSPEDALE VETERINATRIO Ed. 1");
-\item lat e lon, le coordinate dell'edificio non indicano sempre lo stesso posto per ogni edificio (ad esempio l'ingresso) e non sono presenti in 51 edifici cioè nel 20,7 \% dei casi.
+\item lat e lon, le coordinate dell'edificio non indicano sempre lo stesso posto per ogni edificio (ad esempio l'ingresso) e non sono presenti in 51 edifici cioè nel 20,7\% dei casi.
 \end{itemize}
 
 \vspace{5mm} %5mm vertical space
@@ -631,8 +631,8 @@ Il file CSV contente le informazioni sulle aule didattiche della divisione edili
 \item legacy\_floor, identificativo proprio della divisione edilizia per indicare in che piano si trova l'aula, l'informazione è sempre presente ma non è di immediata lettura e il livello di accuratezza si può verificare solo controllando stanza per stanza sulle piantine fornite;
 \item room\_id, identificativo dell'aula risulta univoco solo all'interno di uno stesso palazzo, è sempre presente e combinandolo con il building\_id puù fornire una chiave per l'identificazione della stanza;
 \item cat\_name, definisce la destinazione d'uso della stanza, è sempre presente anche se in questo file sono contenuti solo i dati delle aule didattiche (aule, aule informatiche, sale lauree, etc...);
-\item room\_name, indica il nome con cui viene chiamata la stanza, è molto utile dal lato utente dato che verrà sicuramente usato per la ricerca di aule di interesse, il dato è presente nel 90,8 \% dei casi (367 aule);
-\item capacity, indica la capienza dell'aula ed è presente nel 93 \% dei casi (376 aule su 404);
+\item room\_name, indica il nome con cui viene chiamata la stanza, è molto utile dal lato utente dato che verrà sicuramente usato per la ricerca di aule di interesse, il dato è presente nel 90,8\% dei casi (367 aule);
+\item capacity, indica la capienza dell'aula ed è presente nel 93\% dei casi (376 aule su 404);
 \item area, indica la superficie della stanza in metri quadrati, non risulta molto utile agli scopi dell'applicazione nonostante il dato sia presente in quasi tutte le stanze rappresentate;
 \item buiding\_name, indica una denominazione specifica dell'edificio a cui la stanza appartiene, l'informazione risulta poco utile dal lato utente perché spesso contiene nomi utili alla divisione edilizia, il dato è comunque presente nella maggior parte dei casi;
 \item note, informazioni aggiuntive sull'aula, poco presenti e di interesse nullo per gli scopi dell'applicazione.    
@@ -652,7 +652,7 @@ La fase successiva è stata l'analisi dei CSV forniti dalla Divisione sistemi in
 \begin{itemize}
 \item building\_id, l'identificativo del palazzo in questo caso utilizza sempre la nuova codifica ed è sempre presente anche se 8 edifici su 51 possiedono un identificativo provvisorio dato che non contengono ancora dati precisi;
 \item building\_name, il nome dell'edificio è sempre presente ma è in molti casi troppo generico rispetto alle informazioni fornite dalla divisione edilizia;
-\item address, l'indirizzo manca nel 7,8 \% (4 edifici su 51) dei casi ma risulta ben formato rispetto a quelli forniti dal CSV corrispettivo dell'edilizia;
+\item address, l'indirizzo manca nel 7,8\% (4 edifici su 51) dei casi ma risulta ben formato rispetto a quelli forniti dal CSV corrispettivo dell'edilizia;
 \item n\_floor, indica il numero di piani dell'edificio, l'informazione risulta ridondante dato che è riconducibile al numero di file DXF forniti per quel palazzo ma risulta completa anche se poco verificabile;
 \item google\_maps\_address, indica un iframe contente l'indirizzo web della pagina di Google Maps corrispondente al palazzo, da esso si potrebbero ricavare le coordinate ma nonostante siano quasi sempre presenti risulta molto più comodo ottenerle dal CSV dell'edilizia. 
 \end{itemize} 
@@ -925,11 +925,12 @@ Le chiamate alla classe di logging quindi sono utilizzate in maniera esaustiva i
 \begin{lstlisting}[label=codice,caption=Esempio di output del Logger nel processamento di file DXF, frame=single]
 [info] 0/3 - Processing file assets/dxf/Con audit/5830_1.dxf
        [warn] Self crossing room is not valid: 
-       Polygon(P(8566.2958, -7802.069))[P(0.0, 125.0), P(312.0, 125.0), 
-       	P(312.0, 315.0), P(136.0, 315.0), P(136.0, 332.0), P(441.0, 332.0), 
-       	P(441.0, 104.0), P(312.0, 104.0), P(312.0, 125.0), P(0.0, 125.0), 
-       	P(0.0, 0.0), P(531.4215, 0.0), P(541.6033, 308.0), P(0.0, 0.0), 
-       	P(0.0, 125.0)]
+       Polygon(P(8566.2958, -7802.069))[P(0.0, 125.0), 
+       	P(312.0, 125.0), P(312.0, 315.0), P(136.0, 315.0), 
+       	P(136.0, 332.0), P(441.0, 332.0), P(441.0, 104.0), 
+       	P(312.0, 104.0), P(312.0, 125.0), P(0.0, 125.0), 
+       	P(0.0, 0.0), P(531.4215, 0.0), P(541.6033, 308.0), 
+       	P(0.0, 0.0), P(0.0, 125.0)]
        [info] Floor 10 for Building Id: 33110 Legacy id: 
        	5830 (Via Comelico, 39, Milano)
               [info] Total rooms found: 69
@@ -938,8 +939,8 @@ Le chiamate alla classe di logging quindi sono utilizzate in maniera esaustiva i
               [info] 66 rooms were categorized
        [ ok ] File processing complete.
 [info] 1/3 - Processing file assets/dxf/Con audit/5830_sez.dxf
-       [fail] It was not possible to identify the floor associated 
-       	to the DXF file
+       [fail] It was not possible to identify the floor 
+       	associated to the DXF file
 [info] 2/3 - Processing file assets/dxf/Con audit/5830_ST.dxf
        [info] Floor 200 for Building Id: 33110 Legacy id: 
        	5830 (Via Comelico, 39, Milano)
@@ -954,6 +955,46 @@ Le chiamate alla classe di logging quindi sono utilizzate in maniera esaustiva i
 
 \newpage
 \section{Definizione del DBAnalysis}
+
+Terminata la definizione del sistema di inserimento dei dati e delle funzionalità di merge l'approccio ETL adottato si può definire completo.
+Dei dati ora presenti nel database però risulta difficile capire la completezza e la validità.
+Per questo motivo si è deciso di implementare un algoritmo in grado di analizzare i dati presenti nel database e di fornire in output, sempre grazie al Logger, una serie di dati utili a comprendere lo stato delle fonti.
+
+Per ogni edificio memorizzato nel database quindi si è deciso di visualizzare:
+\begin{itemize}
+\item informazioni utili alla sua identificazione cioè il building\_id, il legacy\_building\_id e l'indirizzo;
+\item le informazioni ricavate dai file DXF, cioè per ogni piano: il floor\_id, le stanze trovate, le stanze identificate (con room\_id), le stanze categorizzate (con category\_id) e le stanze senza informazioni;
+\item il numero di stanze comuni alle varie fonti per ogni piano, le fonti sono state quindi analizzate a coppie in ogni possibile combinazione; 
+\item nel caso in cui una o più fonti non possiedono informazioni su tale edificio queste vengono segnalate.
+\end{itemize}
+
+Tali informazioni risultano molto utili per analizzare i dati di un singolo palazzo ma essendoci 262 edifici memorizzati è dispendioso trarre informazioni più generali sulle fonti.
+Per questo motivo durante l'analisi di ogni edificio vengono raccolte delle statistiche generali che sono stampate al termine dell'elaborazione.
+In tali informazioni sono presenti:
+\begin{itemize}
+\item il numero di building memorizzati nel database (262);
+\item il legacy\_building\_id degli edifici che lo utilizzano ancora come identificatore principale;
+\item il numero di piani di cui si hanno le piantine (613);
+\item il numero di piani con almeno una stanza identificata tramite il room\_id (148, cioè il 24,1\%);
+\item il numero di stanze trovate (22178);
+\item il numero di stanze identificate per room\_id (428, l'1,9\%);
+\item il numero di stanze categorizzate per category\_id (19690, l'88,8\%);
+\item il numero di stanze senza informazioni cioè né categorizzate né identificate (2060, il 9,3\%);
+\item il numero di piani interessati dal merge tra le fonti edilizia e dxf (143).
+\end{itemize}
+
+\vspace{5mm} %5mm vertical space
+
+Inoltre per ogni possibile combinazione di fonti interessate dalla procedura di merge sono stati raccolti i dati su:
+\begin{itemize}
+\item numero di piani interessati dalla procedura;
+\item numero di stanze presenti nella prima fonte;
+\item numero (e percentuale) di stanze presenti in entrambe le fonti;
+\item building\_id e room\_id delle stanze presenti nella prima fonte e non nella seconda.
+\end{itemize}
+
+Di questi dati sono da segnalare le elevate percentuali di matching di stanze per quanto riguarda le combinazioni da edilizia a dxf, da easyroom a dxf e da easyroom ad edilizia le quali sono tutte sopra il 90\%.
+Il restante caso (da edilizia ad easyroom) presenta invece una percentuale del 63,1\% che testimonia la maggior quantità di informazioni in possesso alla Divisione Manutenzione edilizia e impiantistica.
 
 
 \chapter{Considerazioni finali e risultati}
