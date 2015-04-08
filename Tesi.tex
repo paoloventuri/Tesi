@@ -234,14 +234,16 @@ Come tecniche di sviluppo del software abbiamo cercato di applicare gli aspetti 
 \item Standard di codifica
 \end{enumerate}
 
-Il planning game cioè la definizione delle funzionalità da implementare viste le priorità, le stime dei costi e altre valutazione tecniche è stato messo in atta anche grazie all'utilizzo di Trello. Non sempre però è stato possibile definire dei test in quanto certi pezzi di codice dipendevano totalmente da librerie esterne o definivano algoritmi procedurali il cui funzionamento era difficilmente testabile in maniera efficace.
+Il planning game cioè la definizione delle funzionalità da implementare viste le priorità, le stime dei costi e altre valutazione tecniche è stato messo in atto anche grazie all'utilizzo di Trello. 
 
 Il testing è risultato un'importante risorsa nel corso dello sviluppo del progetto: oltre a dare maggiore sicurezza sulla correttezza del codice scritto in molte occasioni è stato utilizzato il TDD. Il TDD (Test Driven Development) è una tecnica utile sia ad aumentare la copertura dei test sia a scrivere il codice nella maniera più semplice ed efficace. Lo sviluppo guidato dai test si divide in tre fasi fondamentali:
 \begin{itemize}
 \item scrittura del test, il test viene scritto in base alla funzionalità che si vuole implementare e deve fallire in quanto tale funzionalità non esiste ancora;
 \item definizione della funzionalità, viene implementato il codice e si controlla tramite il test la sua correttezza;
 \item refactoring, viene modificato il codice in modo da renderlo più efficiente, leggibile e riusabile.
-\end{itemize} 
+\end{itemize}
+
+Non sempre però è stato possibile definire dei test in quanto certi pezzi di codice dipendevano totalmente da librerie esterne o definivano algoritmi procedurali il cui funzionamento era difficilmente testabile in maniera efficace. 
 
 Oltre ad essere presente nell'approccio TDD il refactoring è stato utilizzato largamente durante lo sviluppo del progetto soprattutto per rendere il codice, non sempre di facile comprensione, il più leggibile ed elegante possibile.
 
@@ -703,8 +705,6 @@ def filter_keys(d, valid_keys):
 
 \vspace{5mm} %5mm vertical space
 
-\vspace{5mm} %5mm vertical space
-
 Il file CSV contenete le categorie delle stanze fornito dall'edilizia presenta dei dati totalmente statici il cui aggiornamento porterebbe ad una revisione totale dei file DXF.
 Tale cambiamento risulta di estrema difficoltà, per tale motivo e anche per la necessità di operare su tali categorie in maniera da poterle rendere più utilizzabili per gli utenti si è deciso di non rendere tali informazioni aggiornabili tramite CSV.
 Utilizzando un file JSON infatti si è riusciti ad avere le stesse informazioni del CSV estese così da poter raggruppare le categorie per gruppi aventi tipo simile e per scopo. 
@@ -780,7 +780,14 @@ Essendo le operazioni da svolgere su tali informazioni molto simili si è deciso
 \item 'RoomDataUpdater' invece oltre a trovare l'edificio in cui salvare i dati e validare il room\_id raggruppa le stanze di uno stesso palazzo in piani, in questo modo sul database avremo per ogni edificio una lista di piani ordinata in cui sono contenute le informazioni delle stanze.
 \end{itemize}
 Altri tipi di operazioni da svolgere prima del salvataggio invece sono diverse in base alla fonte da cui provengono i dati: per questo motivo 'EasyroomDataUpdater' ed 'EdiliziaDataUpdater' sono state mantenute come due classi separate.
+
 Un esempio è dato dal room\_id di proveniente dalla Divisione sistemi informativi: come detto esso è composto dall'identificatore della stanza e da quello dell'edificio (separati da un '\#'). Avendo già l'informazione sul building\_id presente in un altro campo si è deciso di modificarlo prima del salvataggio filtrandolo per lasciare solo il room\_id.
+
+Un'altra operazione sui dati che va effettuata solo per una delle due fonti è la validazione dell'indirizzo dei palazzi conosciuti dalla Divisione Manutenzione edilizia e impiantistica.
+Tali indirizzi seguono spesso uno standard preciso: città, via, numero civico e se presente il numero di edificio rispetto al complesso in cui si trovano. 
+Altre volte come detto nell'analisi dei dati l'indirizzo non fornisce delle informazioni esatte sulla posizione del palazzo (ad esempio "LODI OSPEDALE VETERINATRIO Ed. 1").
+Si è quindi deciso nella procedura sanitize\_building di analizzare tale valore di indirizzo in modo da uniformarlo quando lo si ritiene utile mentre in caso contrario viene segnalato il problema e il campo viene lasciato vuoto.
+Nel caso in cui si riesca anche ad estrarre il numero di edificio questo viene memorizzato in attributo specifico.
  
 \vspace{5mm} %5mm vertical space
 
@@ -1002,11 +1009,164 @@ Il restante caso (da edilizia ad easyroom) presenta invece una percentuale del 6
 
 \section{Elaborazione dei file SVG}
 
-\newpage
-\section{Considerazioni finali sullo sviluppo del progetto}
+Una delle funzionalità principali pensate per l'applicazione finale riguarda la possibilità di vedere le piantine dei vari piani di un edificio.
+Avendo salvato nella chiave 'merged' anche le informazioni inerenti ai poligoni che formano le stanze basta andare a ricreare le piantine in file di tipo immagine.
+
+La scelta è ricaduta sul formato SVG (Scalable Vector Graphics) per alcuni motivi:
+\begin{itemize}
+\item è basato sulla grafica vettoriale scalabile quindi le immagini sono sempre ad alta qualità per qualsiasi valore di risoluzione e zoom;
+\item è un formato derivato dall'XML (eXtensible Markup Language) quindi risulta facile generare e modificare un file;
+\item è possibile raggruppare gli oggetti disegnati;
+\item le immagini create possono essere dinamiche ed interattive. 
+\end{itemize}
+
+\vspace{5mm} %5mm vertical space
+
+Innanzitutto sono state esplorate le librerie disponibili alla generazione di file SVG in Python 3: la libreria selezionata è stata svgwrite.
+
+La generazione di un file SVG rappresentante un piano di un edificio come detto si è basata sulle informazioni grafiche contenute nelle stanze della chiave 'merged': scorrendo le liste delle stanze (rooms e unmatched\_rooms)  esse sono state riordinate in base alla loro categoria.
+Così facendo si è deciso di dividerle in gruppi che rappresentassero la loro destinazione d'uso.
+Ogni stanza inoltre è anch'essa un gruppo contenente la polyline del contorno, il room\_id se disponibile è usato come identificatore della stanza.
+
+Dato che per il file SVG può essere definito uno stile grazie ad un CSS (Cascading Style Sheets) si è deciso di utilizzare un LESS.
+Tale tipologia di file viene definita come un preprocessore di CSS in quanto ne estende le funzionalità per poi venire tradotto proprio in un CSS.
+Il nostro LESS ha quindi il compito di definire un colore per ogni gruppo di categorie i quali sono specificati nel dizionario in room\_categories. 
+Si è deciso però di non rendere tutte le categorie visibili nelle mappe: tale scelta è dovuta alla poca utilità di alcuni tipi di stanze per gli utenti dell'Università degli Studi di Milano.
+Queste categorie (ad esempio i depositi di materiale o le cabine elettriche) non portando una reale utilità sono state rese nei file SVG delle stanze con tipologia "Sconosciuto". 
+Ciò è stato reso possibile all'attributo 'scope' presente sempre nel dizionario delle room\_categories: le categorie con scopo non didattico vengono perciò rimappate in una categoria a parte cioè "Sconosciuto".
+
+Ponendo tutte le stanze in un gruppo separato ('rooms') si è deciso di inserire nel file SVG un altro gruppo contente i nomi delle stanze identificate.
+Come visto dall'analisi del database tali stanze sono solo una piccola parte del totale ma essendo quelle di maggior interesse per gli studenti è sembrato utile evidenziarle sulle mappe grazie alla visualizzazione del loro nome.
+
+Giunti a questo punto l'immagine generata di ogni piano rispecchiava in maniera fedele la piantina del file DXF corrispondente ma risultava difficile capire una cosa basilare per quanto riguarda un mappa: la posizione delle porte.
+Senza tale informazione infatti è impossibile capire dove si può entrare in una stanza e per quelle molto grandi questa informazione è fondamentale.
+Analizzando i vari layer dei file DXF abbiamo cercato di estrarre le informazioni utili da quello denominato 'PORTE'.
+In tale layer sono presenti esattamente i disegni delle porte come da progetto edilizio ma la loro analisi è risultata molto difficile a causa della non uniformità del modo in cui sono state disegnate.
+Alcune porte infatti risultavano come gruppi di linee e cercare di capire quale fosse la loro reale posizione nei muri era un'operazione fattibile.
+Molte porte invece risultavano disegnate riga per riga: in questo caso l'estrazione sarebbe risultata molto più complessa in quanto il raggruppamento delle linee è fondamentale per l'analisi ma non è per nulla semplice.
+La soluzione al problema si è avuta analizzando gli altri layer disponibili: si è notato infatti che evidenziando i muri presenti nei layer 'MURI' e 'GROS\$' la posizione delle porte risultava già evidente.
+Per completezza e migliore estetica si è inoltre deciso di estrarre anche le entità presenti nel layer 'FINESTRE' con le quali i disegni dei muri risultavano migliori.
+Le entità presenti nei tre nuovi layer analizzati sono di tipo Polyline o Line quindi di semplice estrazione e inserimento negli SVG.
+Nei file generati quindi sono presenti il gruppo 'walls' contenente le linee e polyline dei layer 'MURI' e 'GROS\$' mentre nel gruppo 'windows' sono presenti le linee che compongono le finestre.
+
+L'ultima operazione sui file SVG è stata dettata dalla poca chiarezza della colorazione delle mappe: senza una legenda infatti un nuovo utente si sarebbe trovato in difficoltà nel capire le varie categorie di stanze presenti nell'immagine.
+La legenda viene generata dinamicamente per ogni file SVG in modo che vi siano rappresentati solo i gruppi di categorie presenti nella piantina.   
+Gli elementi da disegnare nella legenda sono inseriti nel gruppo 'legend' che a sua volta è diviso in gruppi rappresentanti le macro-categorie delle stanze.
+
+\vspace{5mm} %5mm vertical space
+
+Per poter generare i file SVG dai dati contenuti nelle chiavi 'merged' dei documenti presenti nel database si è deciso di estendere il set dei comandi del nostro 'main'.
+Grazie al comando 'svg' infatti si possono generare tutti i file degli edifici di cui il sistema ha informazioni sufficienti (dati provenienti dai DXF); se invece si vogliono processare solo quelli di un determinato palazzo basta indicarne l'identificativo dopo il comando.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=280pt]{Comelico-DXF.jpg}
+    \caption{DXF rappresentante il piano rialzato del dipartimento di Informatica}
+    \label{fig:Comelico-DXF}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=280pt]{Comelico-SVG.jpg}
+    \caption{SVG rappresentante il piano rialzato del dipartimento di Informatica}
+    \label{fig:Comelico-SVG}
+\end{figure}
 
 \newpage
-\section{Miglioramenti e crescita personale}
+\section{Considerazioni finali sullo sviluppo del progetto e sul miglioramento personale}
+
+Il progetto Spazi-Unimi come detto si proponeva di creare una applicazione multipiattaforma che aiutasse gli utenti ad orientarsi nel contesto dell'Università degli Studi di Milano.
+La prima cosa che si può dire giunti alla fine del periodo di tirocinio previsto (18 settimane) è che il progetto è più o meno a metà strada per giungere alla sua conclusione.
+Le stime iniziali effettuate dai membri del team prevedevano il completamento del lavoro nei tempi citati quindi si può dire che tali stime non fossero corrette. 
+Ben presto infatti ci si è accorti che le problematiche relative allo sviluppo e del sistema erano molto più complesse rispetto alle stime iniziali.
+Questa sottostima dei tempi è dovuta principalmente alla poca esperienza e soprattutto alla scarsa conoscenza iniziale delle tecnologie e delle tipologie di dati e file con le quali abbiamo dovuto lavorare.
+
+\vspace{5mm} %5mm vertical space
+
+La prima parte del processo di sviluppo del software come detto ha previsto del tempo per la comprensione del linguaggio (Python 3) e della tipologia di database (MongoDB).
+In questa fase l'apprendimento è stato molto veloce dato che Python è considerato molto facile da imparare anche grazie alla leggibilità della sua sintassi.
+Lo stesso MongoDB è risultato semplice da utilizzare dato che le query e operazioni effettuabili sulle collection del database si possono definire un'estensione di JavaScript.
+Superata una certa soglia di apprendimento poi lo sviluppo di nuove funzionalità ha subito una velocizzazione dovuta anche alla possibilità di produrre codice in parallelo, cosa che inizialmente era poco possibile.
+
+\vspace{5mm} %5mm vertical space
+
+Per quanto mi riguarda il processo di integrazione e validazione dei dati forniti dalle due fonti è stato sicuramente il più dispendioso in termini di energie e tempo ma anche il più interessante.
+Le problematicità riscontrate in questa parte del progetto sono dovute per lo più al mancato utilizzo da parte delle fonti di uno standard preciso nella creazione dei file.
+Ad esempio ciò che ci ha portato a definire un algoritmo di inferenza dei piani è stata la mancata uniformità nello standard di codifica dei nomi dei file DXF.
+Questa serie di problemi hanno così allungato molto il tempo di sviluppo della parte back-end togliendo tempo allo sviluppo dell'applicazione vera e propria.
+
+La parte del sistema sviluppata però ha una caratteristica su cui ci si è concentrati in maniera prioritaria: il prodotto è affidabile e robusto.
+L'affidabilità deriva dall'aver cercato di ottimizzare sempre i dati a nostra disposizione: invece di segnalare le criticità e buttare le informazioni si è sempre cercato di analizzare quanto l'informazione fosse utilizzabile e migliorabile.
+Il risultato sono stati gli algoritmi di controllo presenti in ogni parte del codice che validano o sistemano i dati fornendo un report utile agli utenti che li aggiornano.
+La robustezza invece è stata ottenuta ponendo altri controlli soprattutto in relazione ai file utilizzati come input.  
+Inoltre la maggior parte del codice è testata e ciò ci ha portato ad avere una buona sicurezza nel considerare i risultati delle varie elaborazioni come positivi.
+
+\vspace{5mm} %5mm vertical space
+
+Un'altra caratteristica fondamentale dei prodotti software che si è cercato di ottimizzare è la qualità del codice.
+Python da solo fornisce una sintassi pulita e leggibile ma in molti casi ci si è scontrati con funzioni molto lunghe e complesse che riviste dopo qualche tempo risultavano difficili da comprendere anche a chi le aveva scritte.
+Per questo motivo il refactoring è stata una fase fondamentale del nostro processo di sviluppo: ogni qualvolta si notava una porzione di codice da rivedere o lo si faceva immediatamente o si aggiungeva una nota su Trello così da non dimenticarsi della modifica da fare.
+Nonostante un team di più persone possa solitamente produrre codice scritto in maniera molto diversa passando da membro a membro si è cercato di adottare lo stile consigliato di Python\footnote{https://www.python.org/dev/peps/pep-0008}
+ leggermente adattato per rispecchiare le nostre esigenze.
+Un esempio è la denominazione dei metodi privati: tale distinzione in Python non esiste quindi per indicare l'insieme di funzioni che non andrebbero richiamate al di fuori della classe si utilizza un underscore ('\_') prima del nome del metodo.
+
+Sempre con l'obbiettivo della leggibilità del codice scritto si è inoltre aggiunto ad ogni funzione una docstring cioè un commento con il compito di descrizione.
+Lo standard utilizzato per tali commenti è il seguente:
+\begin{itemize}
+\item un descrizione veloce del compito della funzione;
+\item una lista degli argomenti passati, per ogni argomento viene specificato il tipo previsto e la sua funzione;
+\item la specifica del valore di ritorno della funzione;
+\item se necessaria una descrizione più esaustiva e completa delle operazioni svolte in tale procedura. 
+\end{itemize}
+
+\vspace{5mm} %5mm vertical space
+
+Per quanto riguarda invece le scelte tecnologiche effettuate all'inizio del progetto si possono trarre ora delle conclusioni vista la quantità di tempo passata utilizzandole.
+Python 3 si dimostrato un linguaggio molto potente ed efficace, e grazie all'approccio multiparadigma ha permesso di implementare sempre il codice nella maniera più semplice ed intuitiva.
+
+\vspace{5mm} %5mm vertical space
+
+MongoDB come database NoSQL si è dimostrato molto utile per quanto riguarda il processo di Data Integration: potendo inserire nella colletion dei documenti aventi strutture diverse non ci si è infatti dovuti preoccupare della miriade di campi 'NULL' che avremmo avuto con un classico database relazionale.
+
+Altro punto a favore di MongoDB sono le query geospaziali già definite: creando oggetti GeoJson e un indice sui campi che li contengono si possono effettuare facilmente delle richieste per sapere dove ci si trova.
+
+Sempre approposito degli indici si è cercato di effettuare delle prove per capire quale fosse l'incremento alle prestazioni dovuto al loro utilizzo e quale fosse la struttura migliore per i documenti contenuti nella collection. Le prove su database sono state quattro e si basavano tutte su dei dati fittizi creati grazie alla possibilità di eseguire codice JavaScript sulla console di MongoDB. 
+La collection interessata dai test conteneva sempre dati su 1500 edifici aventi ognuno 5 piani in cui vi erano sempre 10 stanze mappate: tale insieme è molto superiore a quello realmente a disposizione ma è servito per comprendere meglio i tempi di risposta del database.   
+Le prove effettuate sono state le seguenti:
+\begin{itemize}
+\item ricerca di una stanza in una collection con i dati delle aule annidati negli edifici, tempo di calcolo: 5.61 secondi;
+\item ricerca di una stanza in una collection contenente una lista di tutte le aule senza annidamento, tempo di calcolo: 12.33 secondi
+\item ricerca di una stanza con dati sulle aule annidati in quelli degli edifici e con indice creato sui room\_id, tempo di calcolo: 0.17 secondi;
+\item ricerca su una collection di aule con indice creato sempre sul room\_id di ogni stanza, tempo di calcolo: 0.15 secondi. 
+\end{itemize}
+
+Queste prove hanno dimostrato la validità degli indici in MongoDB e hanno fatto capire che il database si comporta meglio quando i dati sono annidati e non divisi in collection separate.
+
+Ciò ci porta però alla problematica principale emersa dall'utilizzo di MongoDB: effettuando una query in cui ad esempio si specifica un parametro di una stanza da cercare il database ritorna la lista di documenti rappresentanti gli edifici che contengono almeno un'aula che soddisfa il parametro.
+Questo comporta un maggiore spreco di spazio per il fatto di aver ritornato interi documenti e uno spreco di tempo dovuto alla necessità di dover cercare nuovamente le aule interessate all'interno dei documenti ricevuti.
+Tale problematica si evidenzia maggiormente in fase di definizione delle API e può essere risolta proprio definendo un'altra collection contente le informazioni delle aule.  
+
+\vspace{5mm} %5mm vertical space
+
+Dal mio punto di vista lo sviluppo del progetto Spazi-Unimi ha portato una notevole crescita personale; il fatto di aver imparato partendo da zero nuove tecnologie (Python 3, MongoDB, etc...) oltre ad aumentare le mie competenze mi ha fatto comprendere appieno l'importanza di cercare un continuo miglioramento e aggiornamento nel campo dell'informatica.
+
+Altra considerazione importante è che questo per me è stato il primo progetto svolto in team al di fuori dei laboratori didattici svolti durante le lezioni universitarie.
+La mancanza di uno sviluppo guidato dall'alto come capita in ambito di insegnamento ha portato a commettere molti errori da parte dei membri del team.
+Proprio tali errori e la loro risoluzione (quando possibile) hanno però definito una forte crescita di esperienza.
+In molti casi non si è infatti riusciti a mantenere le linee guida dell'XP (Extreme Programming) soprattutto per quanto riguarda il principio KISS (Keep It Simple, Stupid).
+Volendo utilizzare un approccio Big Design Up Front (BDUF) in molti casi infatti si è andati a complicare la progettazione e l'implementazione di certe parti del sistema.
+
+Tali errori però sono riconducibili proprio alla mancanza di esperienza dei membri del team e certe volte anche ad una volontà eccessiva di migliorare la qualità del prodotto portandolo così ad una complessità fin troppo elevata in certe sue parti.
+
+\vspace{5mm} %5mm vertical space
+
+A mio modesto parere però il prodotto sin qui sviluppato ha portato alla definizione di un database contente dati di qualità molto buona che utilizzati nella futura applicazione multipiattaforma porteranno un notevole beneficio per gli utenti dell'Università degli Studi di Milano.  
+
+
+
+
+
 
 
 %
