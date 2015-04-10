@@ -23,6 +23,9 @@
 \floatstyle{boxed}
 \restylefloat{figure}
 
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{Bibliografia.bib}
+
 % per le accentate
 \usepackage[utf8]{inputenc}
 
@@ -140,7 +143,7 @@ keywordstyle=\color{green},
 % 
 %			PREFAZIONE
 %
-\prefacesection{Prefazione}
+%\prefacesection{Prefazione}
 
 %
 %			RINGRAZIAMENTI
@@ -152,7 +155,7 @@ asdjhgftry.
 % 
 %			CAPITOLO 1
 \chapter{Il progetto Spazi-Unimi}
-\label{cap1}
+\label{Spazi-Unimi}
 
 \section{Introduzione al progetto}
 
@@ -268,7 +271,7 @@ L'ultima applicazione utilizzata è stata Evernote\footnote{\url{https://evernot
 
 \vspace{5mm} %5mm vertical space
 
-Come tecniche di sviluppo del software abbiamo cercato di applicare gli aspetti dell'Extreme Programming (XP) utili al nostro caso. XP è una metodologia di sviluppo del software appartenente alla famiglia delle metodologie agili ed è definita da 12 aspetti/attività principali:
+Come tecniche di sviluppo del software abbiamo cercato di applicare gli aspetti dell'Extreme Programming (XP)\cite{XP} utili al nostro caso. XP è una metodologia di sviluppo del software appartenente alla famiglia delle metodologie agili\footnote{\url{http://agilemanifesto.org}} ed è definita da 12 aspetti/attività principali:
 \begin{enumerate}
 \item Planning game
 \item Brevi cicli di rilascio
@@ -395,7 +398,7 @@ Tutte le classi definite in 'model' possiedono due metodi particolari:
 
 \vspace{5mm} %5mm vertical space
 
-Il passo successivo è stato definire una classe dxf\_reader in grado di leggere i dati da un file DXF e creare un Floor contenente tutti i dati utili.
+Il passo successivo è stato definire una classe DXFReader in grado di leggere i dati da un file DXF e creare un Floor contenente tutti i dati utili.
 Dopo aver letto il file con dxfgrabber come visto in precedenza viene richiamata una funzione (\textit{\_extract\_entities()}) che scrorre la lista di entità lette e controlla se appartengono alla tipologia e ai layer di nostro interesse.
 I testi trovati vengono salvati in un'apposita lista mentre per quanto riguarda le polyline delle stanze vengono sottoposte ad alcune operazioni prima di venire immagazzinate:
 \begin{itemize}
@@ -566,7 +569,7 @@ Salvando nel file di configurazione 'general.json' le intestazioni delle 5 tipol
 
 
 \chapter{Integrazione e validazione dei dati edilizi}
-\label{cap2}
+\label{Data-Integration}
 
 \section{Tecniche di definizione del DBMS del progetto Spazi-Unimi}
 
@@ -577,7 +580,7 @@ La fase successiva del progetto ha riguardato la definizione di un DBMS (Databas
 L'uso dei database e il loro sviluppo sono andati di pari passo con il progresso in ambito informatico: già negli anni 60 infatti cominciarono ad essere sviluppate e introdotte le prime tipologie di basi di dati cioè i database navigazionali. 
 Questa tipologia si basava sulla navigazione dei dati in maniera manuale: ogni dato era connesso con un altro e per reperirlo bastava inserire il giusto percorso; i database navigazionali erano perciò divisibili in due categorie: quelli a rete e quelli gerarchici.
 Alla fine degli anni 60 cominciarono ad affermarsi i primi hard disk e ciò portò i database navigazionali, fin lì memorizzati su nastri magnetici, ad essere considerati inefficienti. 
-Edgar F. Codd nel 1970 pubblicò 'A Relational Model of Data for Large Shared Data Banks un articolo in cui proponeva una nuova tipologia di database basata su tabelle il cui contenuto si poteva manipolare con un linguaggio dedicato.
+Edgar F. Codd nel 1970 pubblicò 'A Relational Model of Data for Large Shared Data Banks'\cite{Codd} un articolo in cui proponeva una nuova tipologia di database basata su tabelle il cui contenuto si poteva manipolare con un linguaggio dedicato.
 Lo sviluppo di queste idee portò negli anni a quello che tutt'oggi è il modello di database più utilizzato cioè il relazionale mentre il linguaggio che è stato sviluppato è l'SQL (Structured Query Language).
 Negli anni 80 si svilupparono i primi database ad oggetti che memorizzano i dati in forma di oggetti proprio come nell'OOP (Object Oriented Programming).
 Questo continuo svilupparsi e crescere dei database è dovuto alla sempre crescente mole di dati che si vuole memorizzare cercando però di mantenere le prestazioni ottimali. 
@@ -605,14 +608,14 @@ Tale qualità non è sempre semplice da definire e nel nostro specifico caso pu�
 
 Il Data Integration è il processo di Data Management che si occupa di manipolare i dati, provenienti anche da più fonti, così da uniformarli e prepararli alla memorizzazione nel database.
 
-La teorizzazione dell'integrazione dei dati è iniziata negli anni 80 e prevedeva l'interoperabilità tra diversi database\footnote{John Miles Smith (1982): 'Multibase: integrating heterogeneous distributed database systems'}.
+La teorizzazione dell'integrazione dei dati è iniziata negli anni 80 e prevedeva l'interoperabilità tra diversi database\cite{Multibase}.
 Bisogna aspettare però fino al 1991 per avere il primo sistema di Data Integration dipendente dai metadati: l'università del Minnesota infatti definì tale sistema per l'IPUMS (Integrated Public Use Microdata Series) cioè il database contenete i dati di ogni censimento degli Stati Uniti dal 1850 al 2000. 
 Il Data Integration System implementato per l'IMPUMS si basa su un approccio ETL (Extract, Transform, Load) e fa confluire i dati finali in un database basato sul Data Warehouse.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=280pt]{ETL+Datawarehouse.jpg}
-    \caption{Sistema di Data Integration basato sull'approccio ETL con memorizzazione in Data Warehouse}
+    \caption{Sistema di Data Integration basato sull'approccio ETL con memorizzazione in Data Warehouse (Immagine tratta da da Wikipedia\cite{Integration-Wiki})}
     \label{fig:ETL_Datawarehouse}
 \end{figure}
 
@@ -639,7 +642,7 @@ In questo modo si viene e creare un database virtuale i cui dati sono gli stessi
 \begin{figure}[H]
     \centering
     \includegraphics[width=280pt]{Dataintegration+Wrapper.jpg}
-    \caption{Architettura con schema globale: Data Integration basato su un approccio di Database virtuale e wrapper}
+    \caption{Architettura con schema globale: Data Integration basato su un approccio di Database virtuale e wrapper (Immagine tratta da Wikipedia\cite{Integration-Wiki})}
     \label{fig:Data_Integration_Wrapper}
 \end{figure}
 
@@ -650,7 +653,7 @@ Il ruolo del wrapper in questo tipo di sistemi è riconducibile all'Adapter Patt
 \begin{figure}[H]
     \centering
     \includegraphics[width=280pt]{Adapter.jpg}
-    \caption{Class Diagram UML dell'Adapter Pattern}
+    \caption{Class Diagram UML dell'Adapter Pattern (Immagine tratta da \textit{Head First Design Patterns}\cite{Pattern})}
     \label{fig:Adapter_Pattern}
 \end{figure}
 
@@ -1081,7 +1084,7 @@ Il restante caso (da edilizia ad easyroom) presenta invece una percentuale del 6
 
 
 \chapter{Considerazioni finali e risultati}
-\label{cap3}
+\label{Considerazioni-finali}
 
 \section{Elaborazione dei file SVG}
 
@@ -1242,25 +1245,15 @@ Tali errori però sono riconducibili proprio alla mancanza di esperienza dei mem
 \vspace{5mm} %5mm vertical space
 
 A mio modesto parere però il prodotto sin qui sviluppato ha portato alla definizione di un database contente dati di qualità molto buona che utilizzati nella futura applicazione multi-piattaforma porteranno un notevole beneficio per gli utenti dell'Università degli Studi di Milano.   
-
-
-
-
-
-
-
 %
 %
 
 %
 %			BIBLIOGRAFIA
 %
-\begin{thebibliography}{00}
-%
-\bibitem{}
+\nocite{*}
+\printbibliography
 
-%
-\end{thebibliography}
 % 
 \end{document}
 
