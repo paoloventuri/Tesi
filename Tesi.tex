@@ -180,7 +180,7 @@ I file da cui estrarre le informazioni utili alla creazione dell'applicazione so
 Durante le 18 settimane di stage interno al dipartimento di Informatica il lavoro effettuato ha riguardato principalmente lo sviluppo della parte back-end\footnote{Con il termine back-end in questo caso si intende la parte del sistema nascosta all'utente finale il quale interagisce con il front-end cioè l'applicazione.} che si propone di fornire agli addetti delle diverse fonti di dati un modo semplice e immediato per aggiornare le informazioni.
 La parte su cui più si è incentrato il mio lavoro è stata l'unione dei dati provenienti dalle diverse fonti cercando di rendere disponibili all'utente finale le migliori informazioni per quanto riguarda completezza e qualità.
 
-Nell'ultima parte dello stage invece ci si è concentrati sulla generazione di piantine interattive utili alla futura applicazione multipiattaforma che costituisce lo scopo finale del progetto Spazi-Unimi
+Nell'ultima parte dello stage invece ci si è concentrati sulla generazione di piantine interattive utili alla futura applicazione multipiattaforma che costituisce lo scopo finale del progetto Spazi-Unimi %%SAM: possiamo considerare la tesi uno stage?
 
 
 \newpage
@@ -194,6 +194,7 @@ Sia l'edilizia che i sistemi informativi hanno fornito dati sulle aule organizza
 I file XLS essendo per loro natura in formato tabellare risultano di non difficile lettura ma ancora più semplice risulta quella dei file CSV (Comma-separated values) un formato basato su file di testo ricavabile senza sforzo da fogli elettronici o da database. 
 
 Il formato AutoCAD DWG invece è risultato molto più complicato da analizzare in quanto risulta essere un file binario diviso in diverse sezioni la cui codifica è molto complessa. Vista l'impossibilità di ottenere dati in modo semplice si è cercato un formato più adatto ai nostri scopi in cui esportare la collezione di 606 file DWG forniti. La scelta è ricaduta sull'altro formato AutoCAD cioè il DXF\footnote{DXF (Drawing Interchange Format, o Drawing Exchange Format) estensione di file principalmente utilizzata per l'esportazione su altri sistemi CAD.}: questo standard utilizza un file ASCII diviso in sezioni (HEADER, CLASSES, TABLES, ENTITIES, OBJECTS, THUMBNAILIMAGE ed END OF FILE) risultando abbastanza leggibile a chiunque. La sezione di maggior interesse per in nostri scopi è risultata ENTITIES che contiene tutti gli oggetti disegnati nel file con le loro caratteristiche.
+%%SAM: scrivi molto bene Paolo, non ho niente da aggiungere perché sei stato molto chiaro.
 
 \vspace{5mm} %5mm vertical space
 
@@ -226,7 +227,7 @@ Gli aspetti funzionali più importanti e più utili alla programmazione presenti
 \end{python}
 
 \vspace{5mm} %5mm vertical space
-\item i generatori, simili alle list comprehension che non occupano però memoria;
+\item i generatori, simili alle list comprehension che non occupano però memoria; %%SAM: dato che hai deciso citare, spiegare meglio cosa significa "non occupare memoria". Il concetto vero dietro ai generatori è quello di fornire la lazy evaluation: cioè, noi lo dichiariamo, e soltanto quando verrà effettivamente richiesta l'iterazione o l'accesso ai dati del generatore i sui elementi verranno effettivamente creati.
 \begin{python}[title=Esempio di Generatore, frame=single]
 >>> g=((x, y) for x in [1,2,3] for y in [3,1,4] if x != y)
 >>> g
@@ -236,29 +237,36 @@ Gli aspetti funzionali più importanti e più utili alla programmazione presenti
 \end{python}
 
 \vspace{5mm} %5mm vertical space
-\item la parola chiave lambda, utilizzata per definire piccole funzioni utilizzate solo in certe zone del codice senza dover definire una funzione che non verrà più richiamata.
+\item la parola chiave lambda, utilizzata per definire piccole funzioni utilizzate solo in certe zone del codice senza dover definire una funzione che non verrà più richiamata. %%SAM: anonymous function è il termine giusto. Viene dal lambda calculus che vale citare, comunque sempre uno dei concetti cardine della prog. funzionale
 \begin{python}[title=Esempio di utilizzo della lambda, frame=single]
 >>> g = lambda x: x**2
 >>> print(g(8))
 64
 \end{python}
 
+%%SAM: puoi sottolineare la facilità di trattare queste funzioni come oggetti. In tanti altri linguaggi per portare una funzione all'interno di una variabile ci vuole dei giri e malabarismi. (Rubi stesso, se vuoi mettere all'interno di una variabile un metodo di un oggetto, devi fare qualcosa come myvar = oggetto.methods("method_name"), mentre su python tutto è piu' semplice per il suo data model) Comunque sono cose in piu, no nc'è neanche bisogno di citare perché non è lo scopo della tua relazione. Solo se vuoi aumentare il brodo xD
+
+
 \vspace{5mm} %5mm vertical space
 \end{itemize}  
  
 Un'altra caratteristica che ci ha portato a scegliere Python è il fatto che sia un linguaggio interpretato e che fornisca un interprete da riga di comando avanzato (bpython\footnote{\url{http://www.bpython-interpreter.org}}) con il quale provare il codice risulta molto semplice e veloce. 
 
-Per quanto riguarda le performace Pyhton risulta migliore di altri linguaggi interpretati come PHP e Ruby e nonostante non sia paragonabile al C risulta abbastanza simile a linguaggi compilati (Java).
+Per quanto riguarda le performace Pyhton risulta migliore di altri linguaggi interpretati come PHP e Ruby e nonostante non sia paragonabile al C risulta abbastanza simile a linguaggi compilati (Java). %%SAM: ERRORE DI BATTITURA SU PYTHON (SCRITTO PYHTON). Comunque queste osservazioni non sono basate bene, e i linguaggi interpretati che hai scelto per comparare non sono opportuni. Ruby si, ma PHP è un altro discorso. Le performance di Ruby però sono del tutto paragonabile a python, migliore per qualche aspetti ma peggiore per altri. L'unico paragone possibile è tra python e C/Java, che avranno ovviamente performance migliore, ma essendo tipati staticamente hanno tante caratteristiche negative in comparazione.
 
-Ultimo vantaggio dell'usare Python ma dall'elevata importanza è il fatto che possieda una vasta libreria standard ed esista uno svariato numero di librerie importabili che possono svolgere e implementare molte funzionalità e algoritmi. Inoltre è presente un framework di testing unitario (unittest) utile a testare i vari metodi presenti nelle classi implementate: ciò ha reso possibile l'applicazione di modelli di sviluppo software come il TDD (Test Driven Development).
+Ultimo vantaggio dell'usare Python ma dall'elevata importanza è il fatto che possieda una vasta libreria standard ed esista uno svariato numero di librerie importabili che possono svolgere e implementare molte funzionalità e algoritmi. Inoltre è presente un framework di testing unitario (unittest) utile a testare i vari metodi presenti nelle classi implementate: ciò ha reso possibile l'applicazione di modelli di sviluppo software come il TDD (Test Driven Development). %%SAM: su tutti i linguaggi ormai esiste un framework del genere, forze non ha senso citare. Vale la pena invece citare che possiede "svariati framework utili e interessanti per la scrittura, analisi e esecuzione dei test" (anche se ormai ci siamo limitati a unittest, inizialmente tutto ciò ha pesato a favore).
 
 \vspace{5mm} %5mm vertical space
 
 La seconda scelta da effettuare in ambito tecnologico è stata la tipologia di database: vista la grande mole di dati e la loro non completezza si è deciso di utilizzare MongoDB\footnote{\url{https://www.mongodb.org}}. MongoDB è il database NoSQL\footnote{Categoria di software che non utilizzano il modello relazionale.} più diffuso a livello mondiale, la sua tipologia non è relazionale come per i database classici ma si basa sugli oggetti. La memorizzazione dei dati viene effettuata su una tipologia particolare di file JSON\footnote{Per JSON (JavaScript Object Notation) si intende un formato di file basati su JavaScript ed utilizzati per lo più in un contesto di scambio di dati.} detti BSON con uno schema dinamico così che i campi che risulterebbero vuoti in un DB SQL qui non esistono. 
 
-Altro vantaggio della scelta di MongoDB è la possibilità di specificare query avanzate al database che in SQL non sarebbero possibili; grazie all'utilizzo di JavaScript inoltre si possono definire funzioni ad hoc da applicare ai risultati. Le prestazioni in lettura e scrittura di Mongo inoltre sono molto buone per dati di grosse dimensioni come quelli su cui abbiamo lavorato. Ciò è anche dovuto al fatto che in MongoDB esiste la possibilità di creare degli indici che velocizzino la ricerca per campi/documenti usati molto spesso nelle query. Tra gli indici creabili ve ne è uno in particolare che ci è sembrato molto utile per lo sviluppo del nostro progetto: l'indice geospaziale. Dovendo lavorare, tra le altre cose, anche sulle coordinate degli edifici universitari la possibilità di creare un indice per poter effettuare query specifiche basate sulle posizioni geospaziali è sembrata un enorme vantaggio.
+Altro vantaggio della scelta di MongoDB è la possibilità di specificare query avanzate al database che in SQL non sarebbero possibili; 
+%%SAM: Non è interamente vero, con mongo perdiamo un sacco di espressività per query, in speciale in termine di operazioni di JOIN annidate e complesse. Abbiamo anche lo svantaggio di ottenere come risultato sempre l'intero documento. Meglio non citare questa cosa.
+grazie all'utilizzo di JavaScript inoltre si possono definire funzioni ad hoc da applicare ai risultati. Le prestazioni in lettura e scrittura di Mongo inoltre sono molto buone per dati di grosse dimensioni come quelli su cui abbiamo lavorato. Ciò è anche dovuto al fatto che in MongoDB 
+%%SAM: suggerimento: "così come nei database relazionali più utilizzati", 
+esiste la possibilità di creare degli indici che velocizzino la ricerca per campi/documenti usati molto spesso nelle query. Tra gli indici creabili ve ne è uno in particolare che ci è sembrato molto utile per lo sviluppo del nostro progetto: l'indice geospaziale. Dovendo lavorare, tra le altre cose, anche sulle coordinate degli edifici universitari la possibilità di creare un indice per poter effettuare query specifiche basate sulle posizioni geospaziali è sembrata un enorme vantaggio.
 
-Per fare lavorare al meglio il linguaggio (Python 3) con il database (MongoDB) abbiamo inoltre esplorato le librerie disponibili: la scelta è ricaduta su PyMongo\footnote{\url{https://api.mongodb.org/python/current}} che permette in modo facile e veloce di connettersi ad un database MongoDB da un codice Python. PyMongo inoltre fornisce la possibilità di effettuare semplicemente ogni operazione possibile su di un DB: query, inserimenti, creazioni di collection e di indici. 
+Per fare lavorare al meglio il linguaggio (Python 3) con il database (MongoDB) abbiamo inoltre esplorato le librerie disponibili: la scelta è ricaduta su PyMongo\footnote{\url{https://api.mongodb.org/python/current}} che permette in modo facile e veloce di connettersi ad un database MongoDB da un codice Python. PyMongo inoltre fornisce la possibilità di effettuare semplicemente ogni operazione possibile su di un DB: query, inserimenti, creazioni di collection e di indici. %%SAM: L'altro vantaggio è che le sue chiamate vanno rimappate quasi 1 a 1 all'interfaccia di mongo: c'è un overhead bassissimo di nuove tecnologie da imparare!
 
 \vspace{5mm} %5mm vertical space
  
@@ -299,7 +307,7 @@ Il testing è risultato un'importante risorsa nel corso dello sviluppo del proge
 \end{itemize}
 
 Non sempre però è stato possibile definire dei test in quanto certi pezzi di codice dipendevano totalmente da librerie esterne o definivano algoritmi procedurali il cui funzionamento era difficilmente testabile in maniera efficace. 
-
+%%SAM: Per questi casi, in alcuni casi abbiamo risolto posteriormente utilizzando del mocking, in altri facendo il refactoring, in speciale nel caso degli algoritmi procedurali. Ci sono comunque stati casi in cui la testability era talmente bassa e la natura dei test era talmente umana/manuale che abbiamo deciso di non testarli.
 Oltre ad essere presente nell'approccio TDD il refactoring è stato utilizzato largamente durante lo sviluppo del progetto soprattutto per rendere il codice, non sempre di facile comprensione, il più leggibile ed elegante possibile.
 
 La programmazione a coppie suggerita da Extreme Programming è stata applicata per gran parte del processo di sviluppo nonostante il team fosse composto da 3 elementi. Per ovviare a questo 'problema' la composizione della coppia che portava avanti l'implementazione è stata decisa a rotazione: due persone scrivevano codice e una studiava nuove funzionalità o migliorava la propria conoscenza delle tecnologie utilizzate. Soprattutto nella prima parte di sviluppo questo approccio è risultato molto produttivo in quanto gli tutte le persone del progetto erano alle prime esperienze per quanto riguarda l'uso del linguaggio di programmazione scelto (Python), del database (MongoDB) ma anche per il lavoro in team. Nella seconda parte del progetto invece l'elemento che restava da solo avendo ormai acquisito sufficiente padronanza delle tecnologie scelte poteva sviluppare autonomamente nuove funzionalità.
@@ -316,6 +324,8 @@ Successivamente si è passati all'esplorazione delle librerie Python in grado di
 >>> dxf
 <dxfgrabber.drawing.Drawing object at 0x7f72d5eef898>
 \end{python}
+
+%%SAM: suggerimento, qualcosa del genere: "come potete vedere l'utilizzo della libreria è estremamente facile, e gestisce tutta la complessità dei file DXF, rimappando il suo contenuto semantico in oggetti comodi da trattare"
 
 \vspace{5mm} %5mm vertical space
 
@@ -359,7 +369,7 @@ Come si può notare dal codice preso come esempio ogni piantina contiene migliai
 \end{python}
 
 \vspace{5mm} %5mm vertical space
-
+%%SAM: mi sono fermato qui, continuo dopo
 \end{itemize}
 
 Una volta capito come analizzare e salvare le entità di nostro interesse è stato necessario creare delle classi (nel package 'model') che rappresentassero queste entità e che fornissero dei metodi utili per trasformarle. 
