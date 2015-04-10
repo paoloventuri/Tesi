@@ -149,7 +149,9 @@ keywordstyle=\color{green},
 %			RINGRAZIAMENTI
 %
 \prefacesection{Ringraziamenti}
-asdjhgftry.
+
+
+
 \afterpreface
 % 
 % 
@@ -982,7 +984,22 @@ La procedura \textit{merge\_floors} invece può essere richiamata in tre punti d
 
 Anche questa volta la procedura viene richiamata, il risultato posto nella chiave 'merged' e il documento salvato nel database.
 
+\vspace{5mm} %5mm vertical space
 
+Giunti a questo punto ci si è resi conto della necessità di svolgere alcune operazioni da svolgere sui dati andavano effettuate esattamente prima del loro salvataggio nel database (o subito dopo).
+Per richiamare queste operazioni si è quindi deciso di implementare in ODMModel una politica di 'callback'. 
+
+\newpage
+
+Per callback si intende una funzione che viene passata come argomento ad un'altra, nel nostro caso sono state definite due tipologie di callback:
+\begin{itemize}
+\item sulla classe, eseguono il metodo sulla classe a cui è associato per ogni istanza esistente;
+\item sulla istanza, eseguono il metodo una sola volta sulla istanza su cui viene richiamato. 
+\end{itemize}
+
+Come detto inoltre i callback possono venire richiamati sia prima del salvataggio (\textit{before\_callback}) sia dopo (\textit{after\_callback}).
+
+La politica di callback viene utilizzata ad esempio per mantenere ordinate le liste di piani salvati nei documenti in MongoDB: la classe Building si occupa infatti di effettuare una callback passando la funzione \textit{ensure\_floors\_sorting}
 
 \newpage
 \section{Reporting degli errori e delle criticità}
