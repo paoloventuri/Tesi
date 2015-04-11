@@ -369,7 +369,7 @@ Come si può notare dal codice preso come esempio ogni piantina contiene migliai
 \end{python}
 
 \vspace{5mm} %5mm vertical space
-%%SAM: mi sono fermato qui, continuo dopo
+
 \end{itemize}
 
 Una volta capito come analizzare e salvare le entità di nostro interesse è stato necessario creare delle classi (nel package 'model') che rappresentassero queste entità e che fornissero dei metodi utili per trasformarle. 
@@ -382,7 +382,7 @@ Il passo successivo è consistito nel definire altre tipologie di oggetti che ri
 \item Polygon, definibile come una collezione di punti ordinata che collegati formano un poligono;
 \item Text, un testo con un punto che indica la posizione in cui deve essere posto.
 \end{itemize}
-
+%%SAM: potresti spiegare perchè abbiamo deciso di implementare queste classi e non abbiamo utilizzato una libreria esterna. (all'inizio avevamo bisogno di veramente poche funzionalità, l librerie disponibili tutte avevano una determinata dimensione)
 Analizzando la struttura di tali classi ci si è resi conto che si sarebbero potute rappresentare come oggetti con un punto di ancoraggio: per il testo il punto di posizione mentre per il poligono l'origine. 
 Scegliendo però un punto che non fosse l'origine e relativizzando i Point che definiscono un Polygon si possono effettuare certe trasformazioni in maniera molto più semplice. Si è quindi definito un 'anchor\_point' per ogni poligono calcolabile come il punto più in basso e più a sinistra del più piccolo rettangolo contenete il poligono (bounding box). 
 In questo modo la traslazione di un Polygon si applica solo traslando il suo anchor\_point senza andare a modificare tutti i punti che lo compongono. 
@@ -404,9 +404,18 @@ L'ultima classe del package 'model' definita prima dell'effettiva lettura dei fi
 
 Tutte le classi definite in 'model' possiedono due metodi particolari:
 \begin{itemize}
+%%SAM: non esiste il concetto di "oggetto di tipo json". Json è un formato per rappresentare oggetti come STRING. Inoltre devi esplicitare che to_serializable è di istanza, from_serializable è classmethod (statico, è una factory sostanzialmente)
 \item \textit{to\_serializable()}, ritorna un oggetto di tipo json (un dizionario) che rappresenta l'oggetto su cui è stato richiamato il metodo;
+%%SAM: converte l'oggetto python complesso in un oggetto che può essere convertito in formato testuale json. Di solito abbiamo optato per rappresentare i nostri oggetti complessi utilizzando il tipo nativo "dizionari" di python.
 \item \textit{from\_serializeble(json)}, riceve un oggetto di tipo json e da esso crea un'istanza della classe usando le informazioni contenute.
+%%SAM: Da un oggetto ricreato dalla sua propria rappresentazione json, ricostruisce l'oggetto python complesso.
+
 \end{itemize}
+
+%%SAM: In particolare, per i due metodi deve valere, a meno di cambiamenti di versioni, la seguente ugualianza:
+% r = Drawable(<args>)
+% r2 = Drawable.from_serializable( r.to_serializable() )
+%% assertEqual(r, r2)  # must be always true!
 
 \vspace{5mm} %5mm vertical space
 
@@ -500,9 +509,11 @@ In questo modo si riesce a ricavare sia il building\_id che il floor\_id dal fil
 \section{Estrazione dei dati dai file CSV}
 
 I dati ricevuti sulle aule come scritto in precedenza erano in formato XLS che per comodità si è deciso di convertire in CSV: una tipologia di file di testo rappresentante una tabella.
-In questo formato nella prima linea sono indicati i nomi delle colonne mentre in quelle successive sono inseriti i dati. Le varie colonne sono separate da un carattere specifico che viene deciso in fase di codifica: nel nostro caso si trattava di una virgola (',').
+In questo formato nella prima linea sono indicati i nomi delle colonne mentre in quelle successive sono inseriti i dati. Le varie colonne sono separate da un carattere specifico che viene deciso in fase di codifica: nel nostro caso si trattava di una virgola (','). %%SAM:è il caso più comune, che da pure il nome alla codifica: comma separated values (comma è la virgola)
 
-Per la lettura di un file CSV in Python è bastato importare la libreria 'csv' e dopo aver aperto il file lo si può leggere partendo dal primo byte (\textit{seek(0)})con la funzione \textit{reader}: il risultato deve essere trasformato in un iteratore che fatto scorrere conterrà il file letto riga per riga.
+Per la lettura di un file CSV in Python è bastato importare la libreria 'csv' 
+%%SAM: già inclusa nella standard library di Python! Batteries included! :P
+e dopo aver aperto il file lo si può leggere partendo dal primo byte (\textit{seek(0)})con la funzione \textit{reader}: il risultato deve essere trasformato in un iteratore che fatto scorrere conterrà il file letto riga per riga.
 
 \vspace{5mm} %5mm vertical space
 
@@ -686,7 +697,7 @@ Per GLAV (Global and Local As View) si intende un ibrido tra le due strategie ap
 
 Dato che il progetto Spazi-Unimi prevede di operare su dati edilizi i quali risultano statici a meno di rare variazioni (ad esempio un cambio di sede per un dipartimento) si è deciso di implementare un sistema ETL che definisce un database di tipo Data Warehouse.
 
-
+%%SAM: molto buona tutta questa parte!
 \newpage
 \section{Analisi dei dati (da DXF e CSV)}
 
@@ -698,7 +709,9 @@ Per utilizzarli in maniera efficace la prima operazione da fare è un'analisi ap
 L'analisi è stata effettuata innanzitutto sui tre file CSV forniti dalla Divisione Manutenzione edilizia e impiantistica; i fogli elettronici contenevano informazioni su: edifici, aule ed infine categorie delle stanze.
 Il file degli edifici contiene i seguenti dati per ogni palazzo rappresentato:
 \begin{itemize}
-\item legacy\_building\_id\footnote{Con il termine legacy si vuole indicare una cosa, in questo caso lo standard, ereditata da un vecchio sistema che viene però ancora utilizzata in certi casi.}, cioè l'identificatore del vecchio standard per il palazzo, è presente per ogni edificio;
+\item legacy\_building\_id\footnote{Con il termine legacy si vuole indicare una cosa, in questo caso lo standard, ereditata da un vecchio sistema che viene però ancora utilizzata in certi casi.
+%%SAM: questa nota non è chiarissima, forse riscrivere la frase?
+}, cioè l'identificatore del vecchio standard per il palazzo, è presente per ogni edificio;
 \item building\_id, il nuovo identificatore di palazzo, è presente solo per gli edifici che hanno messo in pratica il nuovo standard di identificazione cioè l'83,7\% (206 su 246);
 \item address, l'indirizzo è sempre presente per ogni edificio ma non viene utilizzato sempre lo stesso standard di codifica e in molti casi il contenuto risulta poco utile (ad esempio: 'LODI OSPEDALE VETERINATRIO Ed. 1');
 \item lat e lon, le coordinate dell'edificio non indicano sempre lo stesso punto per ogni edificio (ad esempio l'ingresso), inoltre non sono presenti in 51 edifici cioè nel 20,7\% dei casi.
@@ -706,7 +719,7 @@ Il file degli edifici contiene i seguenti dati per ogni palazzo rappresentato:
 
 \vspace{5mm} %5mm vertical space
 
-Il file CSV contente le informazioni sulle aule didattiche della Divisione edilizia contiene:
+Il file CSV contente le informazioni sulle aule didattiche della Divisione edilizia contiene: %% SAM: occhio al typo: "contente". Riscrivere questa frase!
 \begin{itemize}
 \item building\_id, corrispondente a uno di quelli del file degli edifici, tale dato è sempre presente per ogni aula e risulta utilissimo per definire in che palazzo si trova;
 \item address, informazione ridondante rispetto al file precedente, è sempre presente per ogni aula;
@@ -784,7 +797,7 @@ La scrematura si basa ancora una volta sui dizionari degli header salvati in 'ge
 def filter_keys(d, valid_keys):
    return { k: d[k] for k in d if k in valid_keys }
 \end{python}
-
+%% SAM: questo è una dictionary comprehention. Forse conviene citarla come una variazione della list comprehention, di cui hai parlato?
 \vspace{5mm} %5mm vertical space
 
 Il file CSV contenete le categorie delle stanze fornito dall'edilizia presenta dei dati totalmente statici il cui aggiornamento porterebbe ad una revisione totale dei file DXF.
@@ -845,6 +858,7 @@ I comandi implementati sono stati:
 \begin{itemize}
 \item dxf file.dxf, al comando 'dxf' si passa uno o più file DXF da processare;
 \item csv file.csv, il comando 'csv' come l'altro può ricevere uno o più file di tipologia corretta. 
+%% SAM: manca il comando piu' importante: cow! xD
 \end{itemize}
 
 Tali comandi dopo avere controllato l'estensione e la presenza dei file indicati istanziano un apposito 'task': il compito di tali classi (DXFTask e CSVTask) è quello di richiamare tutte le operazioni da effettuare sui file.
@@ -898,13 +912,18 @@ MongoDBPersistenceManager invece importa DB per la connessione ed il suo compito
 Tali metodi sono già realizzati da Pymongo e quindi non si necessiterebbe di un ulteriore livello come quello fornito da tale classe.
 L'idea di base però è quella di rendere il sistema staccato dalle logiche del database così che un possibile cambio nella sua tipologia risulterebbe molto più semplice.
 
+
 ODMModel (che eredita da ODMAttrs) è invece una classe con lo scopo di definire un ORM (Object Relational Mapping) per il caso specifico di MongoDB.
 Un ORM ha l'obbiettivo di fornire i servizi di persistenza sui dati di un database utilizzando un'interfaccia orientata agli oggetti.
+%% SAM: lo scopo non è di definire un ORM, ma un ODM! Se vuoi citare l'ORM devi esplicitare che prima pensavamo che l'orm fosse una cosa, ma invece quello che facevamo era ODM in realtà! Consiglierei di togliere le citazioni sull'ORM e parlare solo di ODM.
+%% SAM: conviene giustificare perché non abbiamo utilizzato nessuna delle molte già esistenti implementazioni di ODM di python. Il motivo era sempre quello: avevamo bisogno di molto poche delle funzionalità, e allora abbiamo deciso di utilizzare un'implementazione più semplice fatta ad hoc. Tutte le librerie ODM disponibili sono dei veri framework per manipolazione del database, noi volevamo qualcosa di piu' lightweight.
 Nel nostro caso non si può però parlare di un ORM dato che il database utilizzato non è relazionale ma basato sui documenti: da qui ODM (Object Document Mapping).
 Grazie ai metodi ridefiniti in MongoDBPersistenceManager e all'ODMModel si riesce quindi a trattare i documenti del database come se fossero degli oggetti.
+%% SAM: questa ultima frase è molto generica e forse un po' fuorviante. Se ci pensi i documenti di mongo sono a tutti gli effetti degli oggetti (concetto di oggetto di javascript è esattamente quello di mongo). Quello che guadagniamo nell'uso di queste classi è una mappatura intuitiva fra oggetti Python e loro rappresentazione su un DB a documenti. Disaccoppiamento fra le due cose anche.
 
 Per poter salvare i dati nella collection building in maniera semplice è quindi stata definita la classe Building che ereditando da ODMModel può utilizzare tutti i metodi per operare sul database in maniera ottimale.
 
+%% SAM: ODMModel fornisce un'utile stratto di astrazione: se mai decidessimo o fosse necessario rappresentare/salvare queste informazioni in altro modo, si potrebbe sostituire il nostro ODMModel con un ORMModel, ad esempio.
 
 \newpage
 \section{Merge dei dati}
@@ -914,14 +933,14 @@ Come detto i dati provenienti dalle varie fonti sono stati già elaborati e post
 Vi sono però alcune operazioni preliminari, riconducibili al concetto di merge, che per comodità sono state inserite nelle fasi precedenti di elaborazione cioè nei Data Updater.
 
 Innanzitutto i documenti salvati nel database utilizzano come identificativo il building\_id quindi il nuovo standard; in caso la sorgente non utilizzasse tale standard viene utilizzato il legacy\_building\_id cioè il vecchio standard degli identificativi.
-In questo modo però si vengono a salvare documenti separati per informazioni riguardanti lo stesso palazzo; ad esempio i dati tradotti dai file DXF avrebbero come identificativo il 'legacy' mentre quelli provenienti dalla Divisione sistemi informativi utilizzerebbero il nuovo standard.
+In questo modo però si vengono a salvare documenti separati per informazioni riguardanti lo stesso palazzo; ad esempio i dati tradotti dai file DXF avrebbero come identificativo il 'legacy' mentre quelli provenienti dalla Divisione sistemi informativi utilizzerebbero il nuovo standard. %% SAM: D grande in Divisione?
 La soluzione sta nel file CSV fornito dall'edilizia che contiene i dati sugli edifici: esso è l'unico contenente una mappatura tra i due diversi standard.
 Tale mappatura è utilizzata nella fase di salvataggio in due modi:
 \begin{itemize}
 \item nel caso in cui la fonte utilizzi il vecchio standard si cercano i documenti non in base all'identificatore ma in base all'attributo 'l\_b\_id' (legacy\_building\_id);
 \item all'inserimento del file sugli edifici dell'edilizia si richiama una procedura che cerca i documenti che usano come identificatore il vecchio standard e li modifica in modo che utilizzino il nuovo 'id' reso ora disponibile dal CSV. 
 \end{itemize} 
-
+%% SAM: fermato qua, continuo dopo
 \vspace{5mm} %5mm vertical space
 
 Le altre due operazioni di unificazione dei dati da applicare in lettura dei file riguardano i dati delle piantine: l'identificazione della categoria delle stanze e l'identificazione delle stanze di cui si hanno informazioni provenienti dalle altre fonti.
