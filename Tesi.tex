@@ -139,7 +139,7 @@ keywordstyle=\color{green},
 %
 \beforepreface
 \prefacesection{}
-        {\hfill \Large {\sl dedicato a \dots}}
+        {\hfill \Large {\sl dedicato ai miei genitori Francesco e Donella}}
 % 
 %			PREFAZIONE
 %
@@ -149,9 +149,26 @@ keywordstyle=\color{green},
 %			RINGRAZIAMENTI
 %
 \prefacesection{Ringraziamenti}
+{
+Innanzitutto vorrei ringraziare i miei compagni di viaggio per quanto riguarda il progetto Spazi-Unimi: Samuel e Diego. Quest'anno passato con voi è sicuramente stato molto duro e stancante ma grazie al vostro aiuto e alla vostra compagnia penso sia anche il più bello tra quelli trascorsi in università.
 
+Un ringraziamento va anche al professor Carlo Bellettini e al mio correlatore il dottor Matteo Camilli che mi hanno permesso di prendere parte allo svolgimento di questo interessantissimo progetto.
 
+Dopodiché vorrei ringraziare i miei genitori: Francesco e Donella. Grazie a loro ho avuto la possibilità di continuare gli studi, in questi anni lontano da casa mi hanno dato un grande appoggio ed anche nei momenti difficili mi hanno sempre lasciato scegliere la strada che reputavo migliore.     
+Un ringraziamento va anche a mio fratello Emanuele con il quale ho condiviso tantissime esperienze negli ultimi anni.
 
+Grazie a tutte le persone che sono venute a trovarmi durante i week-end passati a casa, in particolare un grazie di cuore a mia nonna Maria che mi ha sempre incoraggiato. 
+
+Un grosso grazie a tutti gli amici di Malonno (non scrivo i nomi per paura di dimenticare qualcuno): anche se riusciamo a vederci solo il sabato sera mi avete sempre aiutato a divertirmi e a distrarmi dai 'problemi' universitari.
+
+Grazie a tutti i coinquilini che ho avuto nel corso di questi cinque anni 'milanesi': grazie a voi mi sento molto cresciuto e migliorato rispetto ai primi tempi passati fuori casa.
+
+Vorrei ringraziare i ragazzi della WS Basket: grazie a voi ho avuto la possibilità di continuare a praticare lo sport che più amo nonostante fossi lontano dal mio paese.
+Siete un gruppo fantastico e spero di riuscire a giocare con voi ancora a lungo.
+
+Un ringraziamento va ai bambini e ragazzi del minibasket dell'US Malonno: nonostante sono ancora alle prime armi come allenatore spero di avervi aiutato nel migliorare le vostre capacità e il vostro spirito di squadra.
+Un grazie anche a Marzio che si impegna sempre tantissimo e mi ha dato l'opportunità di iniziare ad allenare: spero di riuscire a trasmettere a tutti i giocatori la mia passione per questo sport.
+}
 \afterpreface
 % 
 % 
@@ -1000,12 +1017,13 @@ Anche questa volta la procedura viene richiamata, il risultato posto nella chiav
 
 \vspace{5mm} %5mm vertical space
 
-Giunti a questo punto ci si è resi conto della necessità di svolgere alcune operazioni da svolgere sui dati andavano effettuate esattamente prima del loro salvataggio nel database (o subito dopo).
+Giunti a questo punto ci si è resi conto della necessità di svolgere alcune operazioni sui dati esattamente prima del loro salvataggio nel database (o subito dopo).
 Per richiamare queste operazioni si è quindi deciso di implementare in ODMModel una politica di 'callback'. 
 
 \newpage
 
-Per callback si intende una funzione che viene passata come argomento ad un'altra, nel nostro caso sono state definite due tipologie di callback:
+Per callback si intende una funzione che viene passata come argomento ad un'altra con lo scopo di essere eseguita successivamente, ciò risulta molto utile quando per qualche ragione l'operazione non può essere subito effettuata.
+Nel nostro caso sono state definite due tipologie di callback:
 \begin{itemize}
 \item sulla classe, eseguono il metodo sulla classe a cui è associato per ogni istanza esistente;
 \item sulla istanza, eseguono il metodo una sola volta sulla istanza su cui viene richiamato. 
@@ -1033,7 +1051,7 @@ La classe Logger può essere richiamata grazie ad alcuni tipi di funzioni in bas
 
 \vspace{5mm} %5mm vertical space
 
-Grazie all'uso dell'indentazione si è cercato di rendere l'output più semplice da capire; inoltre l'utente che aggiorna i dati può settare tramite una variabile il livello di verbosità del Logger così da visualizzare solo le informazioni di suo interesse.
+Grazie all'uso dell'indentazione si è cercato di rendere l'output più semplice da capire; inoltre l'utente che aggiorna i dati può settare tramite una variabile il livello di verbosità del Logger così da visualizzare solo le informazioni di suo interesse (ad esempio si possono visualizzare solo gli 'error' e le 'info' associate).
 
 Le chiamate alla classe Logger quindi sono utilizzate in maniera esaustiva in tutte le procedure svolte dal sistema in modo da semplificare il compito degli addetti.
 
@@ -1138,8 +1156,8 @@ La generazione di un file SVG rappresentante un piano di un edificio come detto 
 Così facendo si è deciso di dividerle in gruppi che rappresentassero la loro destinazione d'uso.
 Ogni stanza inoltre è anch'essa un gruppo contenente la polyline del contorno, il room\_id se disponibile è usato come identificatore della stanza.
 
-Dato che per il file SVG può essere definito uno stile grazie ad un CSS (Cascading Style Sheets) si è deciso di generarlo tramite un LESS.
-Tale tipologia di file viene definita come un preprocessore di CSS in quanto ne estende le funzionalità per poi venire tradotto proprio in un CSS.
+Gli aspetti estetici (colori, contorni, etc.) del file SVG possono essere definiti su un file di stili separato CSS (Cascading Style Sheets) quindi abbiamo utilizzato un'estensione di CSS chiamata LESS. 
+Tale tipologia di file viene definita come un preprocessore di CSS in quanto ne estende le funzionalità per poi venire tradotta proprio in un CSS.
 Il nostro LESS ha quindi il compito di definire un colore per ogni gruppo di categorie i quali sono specificati nel dizionario in 'room\_categories.json'. 
 Si è deciso però di non rendere tutte le categorie visibili nelle mappe: tale scelta è dovuta alla poca utilità di alcuni tipi di stanze per gli utenti dell'Università degli Studi di Milano.
 Queste categorie (ad esempio i depositi di materiale o le cabine elettriche) sono state poste, nei file SVG, in un gruppo di stanze con nome di categoria 'Sconosciuto'. 
