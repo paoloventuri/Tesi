@@ -177,10 +177,10 @@ I file da cui estrarre le informazioni utili alla creazione dell'applicazione so
 
 \vspace{5mm} %5mm vertical space
 
-Durante le 18 settimane di stage interno al dipartimento di Informatica il lavoro effettuato ha riguardato principalmente lo sviluppo della parte back-end\footnote{Con il termine back-end in questo caso si intende la parte del sistema nascosta all'utente finale il quale interagisce con il front-end cioè l'applicazione.} che si propone di fornire agli addetti delle diverse fonti di dati un modo semplice e immediato per aggiornare le informazioni.
+Durante le 18 settimane di tirocinio interno al dipartimento di Informatica il lavoro effettuato ha riguardato principalmente lo sviluppo della parte back-end\footnote{Con il termine back-end in questo caso si intende la parte del sistema nascosta all'utente finale il quale interagisce con il front-end cioè l'applicazione.} che si propone di fornire agli addetti delle diverse fonti di dati un modo semplice e immediato per aggiornare le informazioni.
 La parte su cui più si è incentrato il mio lavoro è stata l'unione dei dati provenienti dalle diverse fonti cercando di rendere disponibili all'utente finale le migliori informazioni per quanto riguarda completezza e qualità.
 
-Nell'ultima parte dello stage invece ci si è concentrati sulla generazione di piantine interattive utili alla futura applicazione multipiattaforma che costituisce lo scopo finale del progetto Spazi-Unimi
+Nell'ultima parte del tirocinio invece ci si è concentrati sulla generazione di piantine interattive utili alla futura applicazione multi-piattaforma che costituisce lo scopo finale del progetto Spazi-Unimi
 
 
 \newpage
@@ -193,7 +193,7 @@ Sia l'edilizia che i sistemi informativi hanno fornito dati sulle aule organizza
 
 I file XLS essendo per loro natura in formato tabellare risultano di non difficile lettura ma ancora più semplice risulta quella dei file CSV (Comma-separated values) un formato basato su file di testo ricavabile senza sforzo da fogli elettronici o da database. 
 
-Il formato AutoCAD DWG invece è risultato molto più complicato da analizzare in quanto risulta essere un file binario diviso in diverse sezioni la cui codifica è molto complessa. Vista l'impossibilità di ottenere dati in modo semplice si è cercato un formato più adatto ai nostri scopi in cui esportare la collezione di 606 file DWG forniti. La scelta è ricaduta sull'altro formato AutoCAD cioè il DXF\footnote{DXF (Drawing Interchange Format, o Drawing Exchange Format) estensione di file principalmente utilizzata per l'esportazione su altri sistemi CAD.}: questo standard utilizza un file ASCII diviso in sezioni (HEADER, CLASSES, TABLES, ENTITIES, OBJECTS, THUMBNAILIMAGE ed END OF FILE) risultando abbastanza leggibile a chiunque. La sezione di maggior interesse per in nostri scopi è risultata ENTITIES che contiene tutti gli oggetti disegnati nel file con le loro caratteristiche.
+Il formato AutoCAD DWG invece è risultato molto più complicato da analizzare in quanto risulta essere un file binario diviso in diverse sezioni la cui codifica è molto complessa. Vista l'impossibilità di ottenere dati in modo semplice si è cercato un formato più adatto ai nostri scopi in cui esportare la collezione di 606 file DWG forniti. La scelta è ricaduta sull'altro formato AutoCAD cioè il DXF\footnote{DXF (Drawing Interchange Format, o Drawing Exchange Format) estensione di file principalmente utilizzata per l'esportazione su altri sistemi CAD.}: questo standard utilizza un file ASCII diviso in sezioni (HEADER, CLASSES, TABLES, ENTITIES, OBJECTS, THUMBNAILIMAGE ed END OF FILE) risultando quindi facilmente analizzabile tramite un linguaggio di programmazione. La sezione di maggior interesse per in nostri scopi è risultata ENTITIES che contiene tutti gli oggetti disegnati nel file con le loro caratteristiche.
 
 \vspace{5mm} %5mm vertical space
 
@@ -226,7 +226,7 @@ Gli aspetti funzionali più importanti e più utili alla programmazione presenti
 \end{python}
 
 \vspace{5mm} %5mm vertical space
-\item i generatori, simili alle list comprehension che non occupano però memoria;
+\item i generatori, simili alle list comprehension che non occupano però memoria dato che utilizzano la lazy evaluation\footnote{Con il termine Lazy evaluation si intende una tecnica consistente nel rimandare un'elaborazione finché non verrà realmente richiesta.};
 \begin{python}[title=Esempio di Generatore, frame=single]
 >>> g=((x, y) for x in [1,2,3] for y in [3,1,4] if x != y)
 >>> g
@@ -236,7 +236,7 @@ Gli aspetti funzionali più importanti e più utili alla programmazione presenti
 \end{python}
 
 \vspace{5mm} %5mm vertical space
-\item la parola chiave lambda, utilizzata per definire piccole funzioni utilizzate solo in certe zone del codice senza dover definire una funzione che non verrà più richiamata.
+\item la parola chiave lambda\footnote{Il nome lambda deriva dal Lambda calcolo cioè un modello di computazione progettato da Alonzo Church e considerato il primo linguaggio di programmazione funzionale.}, utile a definire funzioni anonime utilizzate solo in certe zone del codice, in questo modo non serve associare alla procedura un identificativo.
 \begin{python}[title=Esempio di utilizzo della lambda, frame=single]
 >>> g = lambda x: x**2
 >>> print(g(8))
@@ -246,28 +246,36 @@ Gli aspetti funzionali più importanti e più utili alla programmazione presenti
 \vspace{5mm} %5mm vertical space
 \end{itemize}  
  
-Un'altra caratteristica che ci ha portato a scegliere Python è il fatto che sia un linguaggio interpretato e che fornisca un interprete da riga di comando avanzato (bpython\footnote{\url{http://www.bpython-interpreter.org}}) con il quale provare il codice risulta molto semplice e veloce. 
+Un'altra caratteristica che ci ha portato a scegliere Python è il fatto che sia un linguaggio interpretato e che fornisca una REPL\footnote{Per REPL (Read-Eval-Print-Loop) si intende un interprete da riga di comando avanzato.} (bpython\footnote{\url{http://www.bpython-interpreter.org}}) con la quale provare il codice risulta molto semplice e veloce. 
 
-Per quanto riguarda le performace Pyhton risulta migliore di altri linguaggi interpretati come PHP e Ruby e nonostante non sia paragonabile al C risulta abbastanza simile a linguaggi compilati (Java).
-
-Ultimo vantaggio dell'usare Python ma dall'elevata importanza è il fatto che possieda una vasta libreria standard ed esista uno svariato numero di librerie importabili che possono svolgere e implementare molte funzionalità e algoritmi. Inoltre è presente un framework di testing unitario (unittest) utile a testare i vari metodi presenti nelle classi implementate: ciò ha reso possibile l'applicazione di modelli di sviluppo software come il TDD (Test Driven Development).
+Ultimo vantaggio dell'usare Python ma dall'elevata importanza è il fatto che possieda una vasta libreria standard ed esista uno svariato numero di librerie importabili che possono svolgere e implementare molte funzionalità e algoritmi.
 
 \vspace{5mm} %5mm vertical space
 
-La seconda scelta da effettuare in ambito tecnologico è stata la tipologia di database: vista la grande mole di dati e la loro non completezza si è deciso di utilizzare MongoDB\footnote{\url{https://www.mongodb.org}}. MongoDB è il database NoSQL\footnote{Categoria di software che non utilizzano il modello relazionale.} più diffuso a livello mondiale, la sua tipologia non è relazionale come per i database classici ma si basa sugli oggetti. La memorizzazione dei dati viene effettuata su una tipologia particolare di file JSON\footnote{Per JSON (JavaScript Object Notation) si intende un formato di file basati su JavaScript ed utilizzati per lo più in un contesto di scambio di dati.} detti BSON con uno schema dinamico così che i campi che risulterebbero vuoti in un DB SQL qui non esistono. 
+La seconda scelta da effettuare in ambito tecnologico è stata la tipologia di database: vista la grande mole di dati e la loro non completezza si è deciso di utilizzare MongoDB\footnote{\url{https://www.mongodb.org}}.
+MongoDB è il database NoSQL\footnote{Categoria di software che non utilizzano il modello relazionale.} più diffuso a livello mondiale, la sua tipologia non è relazionale come per i database classici ma si basa sugli oggetti. 
+La memorizzazione dei dati viene effettuata su una tipologia particolare di file JSON\footnote{Per JSON (JavaScript Object Notation) si intende un formato di file basati su JavaScript ed utilizzati per lo più in un contesto di scambio di dati.} detti BSON con uno schema dinamico così che i campi che risulterebbero vuoti in un DB SQL qui non esistono. 
 
-Altro vantaggio della scelta di MongoDB è la possibilità di specificare query avanzate al database che in SQL non sarebbero possibili; grazie all'utilizzo di JavaScript inoltre si possono definire funzioni ad hoc da applicare ai risultati. Le prestazioni in lettura e scrittura di Mongo inoltre sono molto buone per dati di grosse dimensioni come quelli su cui abbiamo lavorato. Ciò è anche dovuto al fatto che in MongoDB esiste la possibilità di creare degli indici che velocizzino la ricerca per campi/documenti usati molto spesso nelle query. Tra gli indici creabili ve ne è uno in particolare che ci è sembrato molto utile per lo sviluppo del nostro progetto: l'indice geospaziale. Dovendo lavorare, tra le altre cose, anche sulle coordinate degli edifici universitari la possibilità di creare un indice per poter effettuare query specifiche basate sulle posizioni geospaziali è sembrata un enorme vantaggio.
+Altro vantaggio della scelta di MongoDB sono le prestazioni in lettura e scrittura di Mongo molto buone per dati di grosse dimensioni come quelli su cui abbiamo lavorato. 
+Ciò è anche dovuto al fatto che in MongoDB esiste la possibilità, come nei database relazionali più utilizzati, di creare degli indici che velocizzino la ricerca per campi/documenti usati molto spesso nelle query.
+Tra gli indici creabili ve ne è uno in particolare che ci è sembrato molto utile per lo sviluppo del nostro progetto: l'indice geospaziale. 
+Dovendo lavorare, tra le altre cose, anche sulle coordinate degli edifici universitari la possibilità di creare un indice per poter effettuare query specifiche basate sulle posizioni geospaziali è sembrata un enorme vantaggio.
 
-Per fare lavorare al meglio il linguaggio (Python 3) con il database (MongoDB) abbiamo inoltre esplorato le librerie disponibili: la scelta è ricaduta su PyMongo\footnote{\url{https://api.mongodb.org/python/current}} che permette in modo facile e veloce di connettersi ad un database MongoDB da un codice Python. PyMongo inoltre fornisce la possibilità di effettuare semplicemente ogni operazione possibile su di un DB: query, inserimenti, creazioni di collection e di indici. 
+Per fare lavorare al meglio il linguaggio (Python 3) con il database (MongoDB) abbiamo inoltre esplorato le librerie disponibili: la scelta è ricaduta su PyMongo\footnote{\url{https://api.mongodb.org/python/current}} che permette in modo facile e veloce di connettersi ad un database MongoDB da un codice Python. 
+PyMongo inoltre fornisce la possibilità di effettuare ogni operazione possibile (query, inserimenti, creazioni di collection e di indici, etc.) utilizzando un'interfaccia quasi uguale a quella di MongoDB e ciò ha semplificato l'apprendimento  di tale libreria.  
 
 \vspace{5mm} %5mm vertical space
  
-Come per ogni progetto di una certa complessità sorge la necessità di utilizzare un sistema di versioning: la scelta è ricaduta su git\footnote{\url{http://git-scm.com}} uno dei più famosi ed utilizzati software di controllo di versione distribuito. Oltre alla possibilità di tenere traccia delle modifiche fatte ai file del progetto git permette di dividere il lavoro in branch separati così da poter sviluppare diverse funzionalità in autonomia e senza modificare il progetto centrale (nel branch 'master'). I vari branch sono poi unificabili grazie alla procedura di merge. La repository git così creata è stata poi caricata ad un servizio web di hosting specializzato: GitHub\footnote{\url{https://github.com}}; in questo modo i vari elementi del team di sviluppo hanno potuto sempre avere il codice aggiornato alle ultime modifiche.
+Come per ogni progetto di una certa complessità sorge la necessità di utilizzare un sistema di versioning: la scelta è ricaduta su git\footnote{\url{http://git-scm.com}} uno dei più famosi ed utilizzati software di controllo di versione distribuito. 
+Oltre alla possibilità di tenere traccia delle modifiche fatte ai file del progetto git permette di dividere il lavoro in branch separati così da poter sviluppare diverse funzionalità in autonomia e senza modificare il progetto centrale (nel branch 'master').
+I vari branch sono poi unificabili grazie alla procedura di merge. La repository git così creata è stata poi caricata ad un servizio web di hosting specializzato: GitHub\footnote{\url{https://github.com}}; in questo modo i vari elementi del team di sviluppo hanno potuto sempre avere il codice aggiornato alle ultime modifiche.
 
 \vspace{5mm} %5mm vertical space
 
 A questo punto l'esplorazione si è concentrata sui possibili tool/applicazioni utili all'organizzazione del lavoro e alla raccolta di appunti e note.
-Per quanto riguarda l'organizzazione è risultato molto utile e semplice da utilizzare Trello\footnote{\url{https://trello.com}}: si tratta di un'applicazione basata su cartelloni (board). Ogni board è diviso in liste ed ogni lista contiene delle tessere (card) ordinabili: indicando un'attività o una funzionalità da implementare su ogni card si ha un quadro generale molto chiaro dello stato del progetto. Durante lo sviluppo abbiamo ordinato le liste in base alle priorità che secondo noi possedeva ogni tessera; grazie alla possibilità di assegnare le tessere ai membri del team inoltre il lavoro di organizzazione è risultato facilitato.
+Per quanto riguarda l'organizzazione è risultato molto utile e semplice da utilizzare Trello\footnote{\url{https://trello.com}}: si tratta di un'applicazione basata su cartelloni (board). 
+Ogni board è diviso in liste ed ogni lista contiene delle tessere (card) ordinabili: indicando un'attività o una funzionalità da implementare su ogni card si ha un quadro generale molto chiaro dello stato del progetto. 
+Durante lo sviluppo abbiamo ordinato le liste in base alle priorità che secondo noi possedeva ogni tessera; grazie alla possibilità di assegnare le tessere ai membri del team inoltre il lavoro di organizzazione è risultato facilitato.
 
 L'ultima applicazione utilizzata è stata Evernote\footnote{\url{https://evernote.com}}: utile alla raccolta di note ed appunti è risultata molto utile per salvare resoconti e insiemi di informazioni molto più grandi rispetto a quelli di Trello. 
 
@@ -298,7 +306,8 @@ Il testing è risultato un'importante risorsa nel corso dello sviluppo del proge
 \item refactoring, viene modificato il codice in modo da renderlo più efficiente, leggibile e riusabile.
 \end{itemize}
 
-Non sempre però è stato possibile definire dei test in quanto certi pezzi di codice dipendevano totalmente da librerie esterne o definivano algoritmi procedurali il cui funzionamento era difficilmente testabile in maniera efficace. 
+Non sempre però è stato possibile definire dei test in quanto certe funzionalità dipendevano totalmente da librerie esterne o definivano algoritmi procedurali il cui funzionamento era difficilmente testabile in maniera efficace.
+In alcuni casi si è cercato di utilizzare il mocking\footnote{Con Mocking si intende una tecnica utile a simulare il comportamento di un oggetto in modo da poter controllare le chiamate su di esso.}, in altri casi la difficoltà nel testare ha portato ad un refactoring della funzionalità mentre nei casi peggiori il test non è stato implementato dato sarebbe stato talmente veicolato da non risultare più utile. 
 
 Oltre ad essere presente nell'approccio TDD il refactoring è stato utilizzato largamente durante lo sviluppo del progetto soprattutto per rendere il codice, non sempre di facile comprensione, il più leggibile ed elegante possibile.
 
@@ -374,7 +383,7 @@ Il passo successivo è consistito nel definire altre tipologie di oggetti che ri
 \end{itemize}
 
 Analizzando la struttura di tali classi ci si è resi conto che si sarebbero potute rappresentare come oggetti con un punto di ancoraggio: per il testo il punto di posizione mentre per il poligono l'origine. 
-Scegliendo però un punto che non fosse l'origine e relativizzando i Point che definiscono un Polygon si possono effettuare certe trasformazioni in maniera molto più semplice. Si è quindi definito un 'anchor\_point' per ogni poligono calcolabile come il punto più in basso e più a sinistra del più piccolo rettangolo contenete il poligono (bounding box). 
+Scegliendo però un punto che non fosse l'origine e relativizzando i Point che definiscono un Polygon si possono effettuare certe trasformazioni in maniera molto più semplice. Si è quindi definito un 'anchor\_point' per ogni poligono calcolabile come il punto più in basso e più a sinistra del più piccolo rettangolo contenente il poligono (bounding box). 
 In questo modo la traslazione di un Polygon si applica solo traslando il suo anchor\_point senza andare a modificare tutti i punti che lo compongono. 
 L'evoluzione naturale è stata la definizione di una classe Anchorable dalla quale Polygon e Text ereditano: in questo modo tutti i metodi che implementano le trasformazioni sugli anchor\_point di un oggetto sono definiti nello stesso luogo.
 
@@ -394,24 +403,27 @@ L'ultima classe del package 'model' definita prima dell'effettiva lettura dei fi
 
 Tutte le classi definite in 'model' possiedono due metodi particolari:
 \begin{itemize}
-\item \textit{to\_serializable()}, ritorna un oggetto di tipo json (un dizionario) che rappresenta l'oggetto su cui è stato richiamato il metodo;
-\item \textit{from\_serializeble(json)}, riceve un oggetto di tipo json e da esso crea un'istanza della classe usando le informazioni contenute.
+\item \textit{to\_serializable()}, metodo di istanza che ritorna un dizionario rappresentante l'oggetto su cui è stato richiamato il metodo, tale dizionario può venire memorizzato in un file testuale di tipo JSON;
+\item \textit{from\_serializeble(dict)}, riceve un dizionario e da esso crea un'istanza della classe usando le informazioni contenute.
 \end{itemize}
+
+Per tali metodi inoltre deve valere la seguente proprietà: il risultato dell'applicazione di entrambi i metodi su di un oggetto porta alla creazione di un nuovo oggetto uguale a quello di partenza.
+In pratica passando un dizionario a \textit{from\_serializable} e applicando al risultato \textit{to\_serializable} si ottiene un dizionario uguale a quello iniziale (stessa cosa con l'ordine dei metodi invertito se si parte da un oggetto di 'model'). 
 
 \vspace{5mm} %5mm vertical space
 
 Il passo successivo è stato definire una classe DXFReader in grado di leggere i dati da un file DXF e creare un Floor contenente tutti i dati utili.
-Dopo aver letto il file con dxfgrabber come visto in precedenza viene richiamata una funzione (\textit{\_extract\_entities()}) che scrorre la lista di entità lette e controlla se appartengono alla tipologia e ai layer di nostro interesse.
+Dopo aver letto il file con dxfgrabber come visto in precedenza viene richiamata una funzione (\textit{\_extract\_entities()}) che scorre la lista di entità lette e controlla se appartengono alla tipologia e ai layer di nostro interesse.
 I testi trovati vengono salvati in un'apposita lista mentre per quanto riguarda le polyline delle stanze vengono sottoposte ad alcune operazioni prima di venire immagazzinate:
 \begin{itemize}
 \item viene creato un oggetto di tipo Polygon con i punti della polyline trovata;
 \item viene controllato che il poligono sia chiuso, se non lo è viene scartato;
-\item vengono uniti i punti troppo vicini in un unico punto così da semplificare il disegno finale;
+\item vengono uniti i punti troppo vicini in un unico punto così da semplificare il disegno finale e limitare la quantità di dati da salvare;
 \item viene controllato tramite un apposito algoritmo che il poligono non sia di forme problematiche (si controlla che due segmenti non adiacenti non si intersechino) in caso contrario viene scartato;
 \item viene istanziato un oggetto di tipo Room semplicemente passando al costruttore il poligono controllato e semplificato.
 \end{itemize}
 
-L'oggetto di tipo Room risultante viene salvato nella lista di stanze letta e passato al costruttore del Floor. La lista di testi letti invece deve ancora essere elaborata: ogni testo deve venire associato alla stanza che contiene il suo punto di ancoraggio, se non viene associato a nessuna allora è scratato.
+L'oggetto di tipo Room risultante viene salvato nella lista di stanze letta e passato al costruttore del Floor. La lista di testi letti invece deve ancora essere elaborata: ogni testo deve venire associato alla stanza che contiene il suo punto di ancoraggio, se non viene associato a nessuna allora viene scartato.
 Il metodo \textit{associate\_room\_texts(texts)} della classe Floor scorre i testi e controlla a quale Room associare un testo utilizzando un algoritmo che indica se un punto è contenuto in un poligono. 
 La definizione di tale algoritmo non è risultata banale quindi dopo un'esplorazione di procedure già esistenti si è deciso di utilizzare il 'Ray casting algorithm' \footnote{\url{http://en.wikipedia.org/wiki/Point\_in\_polygon\#Ray\_casting\_algorithm}}: l'idea di base è quella che se un punto è all'interno di un poligono una retta che parte da lui intersecherà un numero dispari di volte il perimetro del poligono. Nel caso in cui il punto interseca un numero pari di volte invece si può dire che non è contenuto nel poligono a meno di casi particolari come le intersezioni con i vertici.
 
@@ -484,7 +496,7 @@ I controlli effettuati sui floor\_id sono i seguenti:
 \item se non sono stati trovati f\_id in nessuna fonte stampa un errore e scarta il piano.  
 \end{itemize}
 
-In questo modo si riesce a ricavare sia il building\_id che il floor\_id dal file DXF: questi dati vengono perciò passati al costruttore del Floor insieme alla lista di Room andando a creare così un oggetto contenete tutti i dati letti dalla piantina.
+In questo modo si riesce a ricavare sia il building\_id che il floor\_id dal file DXF: questi dati vengono perciò passati al costruttore del Floor insieme alla lista di Room andando a creare così un oggetto contenente tutti i dati letti dalla piantina.
 
 \newpage
 \section{Estrazione dei dati dai file CSV}
@@ -492,7 +504,7 @@ In questo modo si riesce a ricavare sia il building\_id che il floor\_id dal fil
 I dati ricevuti sulle aule come scritto in precedenza erano in formato XLS che per comodità si è deciso di convertire in CSV: una tipologia di file di testo rappresentante una tabella.
 In questo formato nella prima linea sono indicati i nomi delle colonne mentre in quelle successive sono inseriti i dati. Le varie colonne sono separate da un carattere specifico che viene deciso in fase di codifica: nel nostro caso si trattava di una virgola (',').
 
-Per la lettura di un file CSV in Python è bastato importare la libreria 'csv' e dopo aver aperto il file lo si può leggere partendo dal primo byte (\textit{seek(0)})con la funzione \textit{reader}: il risultato deve essere trasformato in un iteratore che fatto scorrere conterrà il file letto riga per riga.
+Per la lettura di un file CSV in Python è bastato importare il modulo 'csv' contenuto nella libreria standard e dopo aver aperto il file lo si può leggere partendo dal primo byte (\textit{seek(0)})con la funzione \textit{reader}: il risultato deve essere trasformato in un iteratore che fatto scorrere conterrà il file letto riga per riga.
 
 \vspace{5mm} %5mm vertical space
 
@@ -545,8 +557,8 @@ Per rendere le informazioni lette meglio manipolabili in un futuro sono state me
 
 \vspace{5mm} %5mm vertical space
 
-Avendo a disposizione solo 5 tipologie di file CSV da cui leggere i dati si è deciso di non dover indicare ogni volta quale tipo di file si sta processando: la procedura di lettura infatti inferisce la tipologia analizzando l'header letto.
-Salvando nel file di configurazione 'general.json' le intestazioni delle 5 tipologie di CSV si è poi andati a controllare quale di esse corrispondeva con quella appena letta.
+Avendo a disposizione solo cinque tipologie di file CSV da cui leggere i dati si è deciso di non dover indicare ogni volta quale tipo di file si sta processando: la procedura di lettura infatti inferisce la tipologia analizzando l'header letto.
+Salvando nel JSON di configurazione 'general.json' le intestazioni dei cinque tipi di CSV è bastato controllare quale di esse corrispondeva con quella letta dal file.
 
 \newpage
 
@@ -587,7 +599,7 @@ Lo sviluppo di queste idee portò negli anni a quello che tutt'oggi è il modell
 Negli anni 80 si svilupparono i primi database ad oggetti che memorizzano i dati in forma di oggetti proprio come nell'OOP (Object Oriented Programming).
 Questo continuo svilupparsi e crescere dei database è dovuto alla sempre crescente mole di dati che si vuole memorizzare cercando però di mantenere le prestazioni ottimali. 
 
-Il Data Menagement è la disciplina che si occupa di tutte le operazioni utili al funzionamento di un database: dall'inserimento dei dati fino alla loro rimozione passando per tutte le possibili trasformazioni intermedie.
+Il Data Management è la disciplina che si occupa di tutte le operazioni utili al funzionamento di un database: dall'inserimento dei dati fino alla loro rimozione passando per tutte le possibili trasformazioni intermedie.
 Nel caso del nostro progetto la fase più complessa è consistita proprio nell'inserimento dei dati nel DB cercando di uniformarli ed unirli tra loro. 
 Le tecniche di Data Management che sono state utilizzate quindi sono state principalmente: il Data Filtering, il Data Validation e il Data Integration.
 
@@ -611,7 +623,7 @@ Tale qualità non è sempre semplice da definire e nel nostro specifico caso pu�
 Il Data Integration è il processo di Data Management che si occupa di manipolare i dati, provenienti anche da più fonti, così da uniformarli e prepararli alla memorizzazione nel database.
 
 La teorizzazione dell'integrazione dei dati è iniziata negli anni 80 e prevedeva l'interoperabilità tra diversi database\cite{Multibase}.
-Bisogna aspettare però fino al 1991 per avere il primo sistema di Data Integration dipendente dai metadati: l'università del Minnesota infatti definì tale sistema per l'IPUMS (Integrated Public Use Microdata Series) cioè il database contenete i dati di ogni censimento degli Stati Uniti dal 1850 al 2000. 
+Bisogna aspettare però fino al 1991 per avere il primo sistema di Data Integration dipendente dai metadati: l'università del Minnesota infatti definì tale sistema per l'IPUMS (Integrated Public Use Microdata Series) cioè il database contenente i dati di ogni censimento degli Stati Uniti dal 1850 al 2000. 
 Il Data Integration System implementato per l'IMPUMS si basa su un approccio ETL (Extract, Transform, Load) e fa confluire i dati finali in un database basato sul Data Warehouse.
 
 \begin{figure}[H]
@@ -688,7 +700,7 @@ Per utilizzarli in maniera efficace la prima operazione da fare è un'analisi ap
 L'analisi è stata effettuata innanzitutto sui tre file CSV forniti dalla Divisione Manutenzione edilizia e impiantistica; i fogli elettronici contenevano informazioni su: edifici, aule ed infine categorie delle stanze.
 Il file degli edifici contiene i seguenti dati per ogni palazzo rappresentato:
 \begin{itemize}
-\item legacy\_building\_id\footnote{Con il termine legacy si vuole indicare una cosa, in questo caso lo standard, ereditata da un vecchio sistema che viene però ancora utilizzata in certi casi.}, cioè l'identificatore del vecchio standard per il palazzo, è presente per ogni edificio;
+\item legacy\_building\_id\footnote{Con il termine legacy si vuole indicare una caratteristica ereditata da un vecchio sistema la quale viene ancora utilizzata in certi casi particolari.}, cioè l'identificatore del vecchio standard per il palazzo, è presente per ogni edificio;
 \item building\_id, il nuovo identificatore di palazzo, è presente solo per gli edifici che hanno messo in pratica il nuovo standard di identificazione cioè l'83,7\% (206 su 246);
 \item address, l'indirizzo è sempre presente per ogni edificio ma non viene utilizzato sempre lo stesso standard di codifica e in molti casi il contenuto risulta poco utile (ad esempio: 'LODI OSPEDALE VETERINATRIO Ed. 1');
 \item lat e lon, le coordinate dell'edificio non indicano sempre lo stesso punto per ogni edificio (ad esempio l'ingresso), inoltre non sono presenti in 51 edifici cioè nel 20,7\% dei casi.
@@ -696,12 +708,12 @@ Il file degli edifici contiene i seguenti dati per ogni palazzo rappresentato:
 
 \vspace{5mm} %5mm vertical space
 
-Il file CSV contente le informazioni sulle aule didattiche della Divisione edilizia contiene:
+Il file CSV con le informazioni sulle aule didattiche della Divisione edilizia contiene:
 \begin{itemize}
-\item building\_id, corrispondente a uno di quelli del file degli edifici, tale dato è sempre presente per ogni aula e risulta utilissimo per definire in che palazzo si trova;
+\item building\_id, corrispondente a uno di quelli del file degli edifici, tale dato è sempre presente per ogni aula e risulta utilissimo per definire in che palazzo si trova tale stanza;
 \item address, informazione ridondante rispetto al file precedente, è sempre presente per ogni aula;
 \item legacy\_floor, identificativo proprio della divisione edilizia per indicare in che piano si trova l'aula, l'informazione è sempre presente ma non è di immediata lettura e il livello di accuratezza si può verificare solo controllando stanza per stanza sulle piantine fornite;
-\item room\_id, identificativo dell'aula risulta univoco solo all'interno di uno stesso palazzo, è sempre presente e combinandolo con il building\_id può fornire una chiave per l'identificazione della stanza;
+\item room\_id, identificativo dell'aula risulta univoco solo all'interno di uno stesso palazzo, è sempre presente e combinandolo con il building\_id può fornire una chiave univoca per l'identificazione della stanza;
 \item cat\_name, definisce la destinazione d'uso della stanza, è sempre presente anche se in questo file sono contenuti solo i dati delle aule didattiche (aule, aule informatiche, sale lauree, etc.);
 \item room\_name, indica il nome con cui viene chiamata la stanza, è molto utile dal lato utente dato che verrà sicuramente usato per la ricerca di aule di interesse, il dato è presente nel 90,8\% dei casi (367 aule);
 \item capacity, indica la capienza dell'aula ed è presente nel 93\% dei casi (376 aule su 404);
@@ -726,17 +738,17 @@ La fase successiva è stata l'analisi dei CSV forniti dalla Divisione sistemi in
 \item building\_name, il nome dell'edificio è sempre presente ma è in molti casi troppo generico rispetto alle informazioni fornite dalla Divisione edilizia;
 \item address, l'indirizzo manca nel 7,8\% (4 edifici su 51) dei casi ma risulta ben formato rispetto a quelli forniti dal CSV corrispettivo dell'edilizia;
 \item n\_floor, indica il numero di piani dell'edificio, l'informazione risulta ridondante dato che è riconducibile al numero di file DXF forniti per quel palazzo inoltre è poco verificabile ma risulta sempre presente;
-\item google\_maps\_address, indica un iframe\footnote{Un iframe è un elemento HTML utilizzato solitamente per mostrare il contenuto di una pagina web.} contente l'indirizzo web della pagina di Google Maps corrispondente al palazzo, da esso si potrebbero ricavare le coordinate ma nonostante siano quasi sempre presenti risulta molto più comodo ottenerle dal CSV dell'edilizia. 
+\item google\_maps\_address, indica un iframe\footnote{Un iframe è un elemento HTML utilizzato solitamente per mostrare il contenuto di una pagina web.} contenente l'indirizzo web della pagina di Google Maps corrispondente al palazzo, da esso si potrebbero ricavare le coordinate ma nonostante siano quasi sempre presenti risulta molto più comodo ottenerle dal CSV dell'edilizia. 
 \end{itemize} 
 
 \vspace{5mm} %5mm vertical space
 
-L'ultimo file CSV da analizzare è stato quello dei sistemi informativi contenete le informazioni sulle aule didattiche da loro conosciute:
+L'ultimo file CSV da analizzare è stato quello dei sistemi informativi contenente le informazioni sulle aule didattiche da loro conosciute:
 \begin{itemize}
 \item room\_id, in questo caso contiene l'identificatore dell'edificio separato con un '\#' dall'identificatore della stanza, il dato è sempre presente anche se in alcuni casi risulta non rispettato lo standard appena descritto e viene utilizzato un nome per definire l'aula;
 \item room\_name, è il nome umano della stanza, è sempre presente e come per il file CSV corrispettivo risulta molto utile per la ricerca di aule degli utenti;
 \item building\_id, informazione ridondante dato che è contenuta anche dal room\_id, è sempre presente ma come per il file di edifici utilizza anche identificatori provvisori non utilizzabili dall'applicazione;
-\item venue, indica la sede contenete l'aula, è sempre presente ma come in precedenza utilizza nominativi troppo generici rispetto alle informazione dell'edilizia;
+\item venue, indica la sede contenente l'aula, è sempre presente ma come in precedenza utilizza nominativi troppo generici rispetto alle informazione dell'edilizia;
 \item capacity, indica la capienza dell'aula, è sempre presente anche se le informazioni fornite dall'edilizia possono sembrare in tale ambito più affidabili;
 \item type, indica la tipologia di grandezza dell'aula classificandola in 'Piccola', 'Media' o 'Grande', l'informazione è sempre presente ma risulta troppo generica e poco utile all'utente finale;
 \item available, indica la possibilità di utilizzarla previa richiesta, il dato è sempre presente ma indica un risposta negativa per ogni aula quindi non risulta utilizzabile;
@@ -760,7 +772,7 @@ L'ultima attività di analisi dei dati per il progetto ha riguardato le piantine
 Nelle etichette di ogni aula sono stati identificati i seguenti dati:
 \begin{itemize}
 \item il room\_id della stanza contenuto in entrambi i layer testuali;
-\item il category\_id della stanza mappabile nel nome della categoria grazie al CVS corrispondente della Divisione Manutenzione edilizia e impiantistica;
+\item il category\_id della stanza mappabile nel nome della categoria grazie al CSV corrispondente della Divisione Manutenzione edilizia e impiantistica;
 \item la metratura della stanza quasi sempre presente ma di scarso valore per gli scopi dell'applicazione.
 \end{itemize}  
 
@@ -777,7 +789,7 @@ def filter_keys(d, valid_keys):
 
 \vspace{5mm} %5mm vertical space
 
-Il file CSV contenete le categorie delle stanze fornito dall'edilizia presenta dei dati totalmente statici il cui aggiornamento porterebbe ad una revisione totale dei file DXF.
+Il file CSV contenente le categorie delle stanze fornito dall'edilizia presenta dei dati totalmente statici il cui aggiornamento porterebbe ad una revisione totale dei file DXF.
 Tale cambiamento risulta di estrema difficoltà, per tale motivo e anche per la necessità di operare su tali categorie in maniera da poterle rendere più utilizzabili per gli utenti si è deciso di togliere la possibilità di aggiornare tali informazioni tramite CSV.
 Utilizzando un file JSON infatti si è riusciti ad avere le stesse informazioni del CSV estese così da poter raggruppare le categorie per similarità di tipologia e di scopo. 
 Il risultato finale è stato un dizionario avente come chiavi i category\_id e come valori il nome del gruppo di appartenenza (group\_name), la descrizione (category\_name tratta dal file CSV) e lo scopo generico (scope) a cui la stanza è destinata.
@@ -869,7 +881,7 @@ Nel caso in cui si riesca anche ad estrarre il numero di edificio questo viene m
 \vspace{5mm} %5mm vertical space
 
 La politica che si è voluto implementare per quanto riguarda gli aggiornamenti è detta a 'snapshot'\footnote{Il termine snapshot significa letteralmente istantanea.}: lo stato del database rispecchia quello delle informazioni possedute in quel momento senza andare a memorizzare vecchi dati.
-Questo approccio è stato mantenuto sia per i dati provenienti dai file CSV che dai DXF: ogni chiave ('dxf', 'edilizia', 'easyroom') del documento possiede un valore updated\_at contenete la data precisa di aggiornamento, tale attributo è presente anche per il documento stesso e corrisponde al più recente delle tre possibili chiavi.
+Questo approccio è stato mantenuto sia per i dati provenienti dai file CSV che dai DXF: ogni chiave ('dxf', 'edilizia', 'easyroom') del documento possiede un valore updated\_at contenente la data precisa di aggiornamento, tale attributo è presente anche per il documento stesso e corrisponde al più recente delle tre possibili chiavi.
 
 Il caso più critico in tale approccio si ha quando un edificio non deve più essere contenuto nel database perché ad esempio non viene più utilizzato dall'università.
 In tale situazione si può fare una semplice assunzione: essendo i file CSV globali essi contengono i dati di ogni edificio perciò se un edificio presente in uno stato precedente non si trova in un nuovo aggiornamento allora è da considerarsi eliminato.
@@ -886,14 +898,16 @@ La classe DB è molto semplice e si occupa esclusivamente della connessione al d
 
 MongoDBPersistenceManager invece importa DB per la connessione ed il suo compito è quello di definire dei metodi per effettuare le operazioni sul database.
 Tali metodi sono già realizzati da Pymongo e quindi non si necessiterebbe di un ulteriore livello come quello fornito da tale classe.
-L'idea di base però è quella di rendere il sistema staccato dalle logiche del database così che un possibile cambio nella sua tipologia risulterebbe molto più semplice.
+L'idea di base però è quella di rendere il sistema disaccoppiato dalle logiche del database così che un possibile cambio nella sua tipologia risulterebbe molto più semplice.
 
-ODMModel (che eredita da ODMAttrs) è invece una classe con lo scopo di definire un ORM (Object Relational Mapping) per il caso specifico di MongoDB.
-Un ORM ha l'obbiettivo di fornire i servizi di persistenza sui dati di un database utilizzando un'interfaccia orientata agli oggetti.
-Nel nostro caso non si può però parlare di un ORM dato che il database utilizzato non è relazionale ma basato sui documenti: da qui ODM (Object Document Mapping).
-Grazie ai metodi ridefiniti in MongoDBPersistenceManager e all'ODMModel si riesce quindi a trattare i documenti del database come se fossero degli oggetti.
+ODMModel (che eredita da ODMAttrs) è invece una classe con lo scopo di definire un ODM (Object Document Mapping) per il caso specifico di MongoDB.
+Un ODM ha l'obbiettivo di fornire i servizi di persistenza sui dati di un database utilizzando un'interfaccia orientata ai documenti.
+Nonostante la presenza di ODM già disponibili per Python si è deciso di definire da zero questa classe in quanto le implementazioni già esistenti sono risultate dei veri e propri framework per la manipolazione del database.
+In paragone a tali librerie ODMModel è risultata molto più leggera dato che implementa solo le funzionalità a noi utili.
 
-Per poter salvare i dati nella collection building in maniera semplice è quindi stata definita la classe Building che ereditando da ODMModel può utilizzare tutti i metodi per operare sul database in maniera ottimale.
+Grazie ai metodi ridefiniti in MongoDBPersistenceManager e all'ODMModel si riesce quindi ad ottenere una mappatura intuitiva tra i documenti del database e gli oggetti di Python.
+
+Per poter salvare i dati nella collection 'building' in maniera semplice è quindi stata definita la classe Building che ereditando da ODMModel può utilizzare tutti i metodi per operare sul database in maniera ottimale.
 
 
 \newpage
@@ -1124,14 +1138,14 @@ La generazione di un file SVG rappresentante un piano di un edificio come detto 
 Così facendo si è deciso di dividerle in gruppi che rappresentassero la loro destinazione d'uso.
 Ogni stanza inoltre è anch'essa un gruppo contenente la polyline del contorno, il room\_id se disponibile è usato come identificatore della stanza.
 
-Dato che per il file SVG può essere definito uno stile grazie ad un CSS (Cascading Style Sheets) si è deciso di utilizzare un LESS.
+Dato che per il file SVG può essere definito uno stile grazie ad un CSS (Cascading Style Sheets) si è deciso di generarlo tramite un LESS.
 Tale tipologia di file viene definita come un preprocessore di CSS in quanto ne estende le funzionalità per poi venire tradotto proprio in un CSS.
 Il nostro LESS ha quindi il compito di definire un colore per ogni gruppo di categorie i quali sono specificati nel dizionario in 'room\_categories.json'. 
 Si è deciso però di non rendere tutte le categorie visibili nelle mappe: tale scelta è dovuta alla poca utilità di alcuni tipi di stanze per gli utenti dell'Università degli Studi di Milano.
 Queste categorie (ad esempio i depositi di materiale o le cabine elettriche) sono state poste, nei file SVG, in un gruppo di stanze con nome di categoria 'Sconosciuto'. 
 Ciò è stato reso possibile all'attributo 'scope' presente sempre nel dizionario di 'room\_categories.json'.
 
-Ponendo tutte le stanze in un gruppo separato ('rooms') si è deciso di inserire nel file SVG un altro gruppo contente i nomi delle stanze identificate.
+Ponendo tutte le stanze in un gruppo separato ('rooms') si è deciso di inserire nel file SVG un altro gruppo contenente i nomi delle stanze identificate.
 Come visto dall'analisi del database tali stanze sono solo una piccola parte del totale ma essendo quelle di maggior interesse per gli studenti è sembrato utile evidenziarle sulle mappe grazie alla visualizzazione del loro nome.
 
 Giunti a questo punto l'immagine generata di ogni piano rispecchiava in maniera fedele la piantina del file DXF corrispondente ma risultava difficile capire una cosa basilare per quanto riguarda un mappa: la posizione delle porte.
@@ -1229,7 +1243,7 @@ Python 3 si è dimostrato un linguaggio molto potente ed efficace, e grazie all'
 
 MongoDB come database NoSQL si è dimostrato molto utile per quanto riguarda il processo di Data Integration: potendo inserire nella colletion dei documenti aventi strutture diverse non ci si è infatti dovuti preoccupare della miriade di campi 'NULL' che avremmo avuto con un classico database relazionale.
 
-Altro punto a favore di MongoDB sono le query geospaziali molto ben supportate: creando oggetti GeoJson e un indice sui campi che li contengono si possono effettuare facilmente delle richieste per sapere dove ci si trova.
+Altro punto a favore di MongoDB sono le query geospaziali molto ben supportate: creando oggetti GeoJson e un indice sui campi che li contengono si possono effettuare facilmente delle richieste particolari legate alle coordinate geografiche; ad esempio è molto facile in questo modo sapere dove ci si trova.
 
 Sempre approposito degli indici si è cercato di effettuare delle prove per capire quale fosse l'incremento alle prestazioni dovuto al loro utilizzo e quale fosse la struttura migliore per i documenti contenuti nella collection. Le prove su database sono state quattro e si basavano tutte su dei dati fittizi creati grazie alla possibilità di eseguire codice JavaScript sulla console di MongoDB. 
 La collection interessata dai test conteneva dati su 1500 edifici aventi ognuno 5 piani in cui vi erano sempre 10 stanze mappate: tale insieme è molto superiore a quello realmente a disposizione ma è servito per comprendere meglio i tempi di risposta del database.   
@@ -1245,7 +1259,7 @@ Queste prove hanno dimostrato la validità degli indici in MongoDB e hanno fatto
 
 Ciò ci porta però alla problematica principale emersa dall'utilizzo di MongoDB: effettuando una query in cui ad esempio si specifica un parametro di una stanza da cercare il database ritorna la lista dei documenti rappresentanti gli edifici che contengono almeno un'aula che soddisfa il parametro.
 Questo comporta un maggiore spreco di spazio per il fatto di aver ritornato interi documenti e uno spreco di tempo dovuto alla necessità di dover cercare nuovamente le aule interessate all'interno dei documenti ricevuti.
-Tale problematica si evidenzia maggiormente in fase di definizione delle API e può essere risolta proprio definendo un'altra collection contente le informazioni delle aule.  
+Tale problematica si evidenzia maggiormente in fase di definizione delle API e può essere risolta proprio definendo un'altra collection contenente le informazioni delle aule.  
 
 \vspace{5mm} %5mm vertical space
 
@@ -1261,7 +1275,7 @@ Tali errori però sono riconducibili proprio alla mancanza di esperienza dei mem
 
 \vspace{5mm} %5mm vertical space
 
-A mio modesto parere però il prodotto sin qui sviluppato ha portato alla definizione di un database contente dati di qualità molto buona che utilizzati nella futura applicazione multi-piattaforma porteranno un notevole beneficio per gli utenti dell'Università degli Studi di Milano.   
+A mio modesto parere però il prodotto sin qui sviluppato ha portato alla definizione di un database contenente dati di qualità molto buona che utilizzati nella futura applicazione multi-piattaforma porteranno un notevole beneficio per gli utenti dell'Università degli Studi di Milano.   
 %
 %
 
