@@ -940,7 +940,7 @@ Tale mappatura è utilizzata nella fase di salvataggio in due modi:
 \item nel caso in cui la fonte utilizzi il vecchio standard si cercano i documenti non in base all'identificatore ma in base all'attributo 'l\_b\_id' (legacy\_building\_id);
 \item all'inserimento del file sugli edifici dell'edilizia si richiama una procedura che cerca i documenti che usano come identificatore il vecchio standard e li modifica in modo che utilizzino il nuovo 'id' reso ora disponibile dal CSV. 
 \end{itemize} 
-%% SAM: fermato qua, continuo dopo
+
 \vspace{5mm} %5mm vertical space
 
 Le altre due operazioni di unificazione dei dati da applicare in lettura dei file riguardano i dati delle piantine: l'identificazione della categoria delle stanze e l'identificazione delle stanze di cui si hanno informazioni provenienti dalle altre fonti.
@@ -952,6 +952,7 @@ Il testo attraverso il quale è stata inferita la tipologia di stanza viene quin
 
 L'identificazione della stanza invece prevede che siano già stati inseriti i file CSV contenenti le informazioni sulle aule; con tali informazioni si possono confrontare i room\_id con i testi delle etichette e cercare delle corrispondenze.
 Trovata una stanza che matcha con un identificatore la si sposta dalla lista di stanze trovate nel DXF (chiamata unmatched\_rooms) e la si pone in un nuovo attributo strutturato come un dizionario in cui si utilizza proprio il room\_id come chiave. 
+%% SAM: dato che hai pure fornito nomi delle variabili, non conveniva dare gia' del pseudocodice? Oppure non entrare nel dettaglio delle variabili e lasciare la descrizione piu' "panoramica"?
 
 \vspace{5mm} %5mm vertical space
 
@@ -1011,16 +1012,19 @@ La procedura \textit{merge\_floors} invece può essere richiamata in tre punti d
 \item nell'EdiliziaDataUpdater in seguito all'unione di due documenti dovuta alla precedente memorizzazione con il legacy\_building\_id come identificatore.  
 \end{itemize}    
 
+%% SAM: la descrizione fin qua è molto precisa. Consiglierei di far vedere la struttura del dizionario, con le chiavi, ecc, in modo da fornire un esempio all'utente. Per me è molto chiaro tutto ciò, ma mi chiedo se è per il fatto che conosco già il formato del documento del db.
 Anche questa volta la procedura viene richiamata, il risultato posto nella chiave 'merged' e il documento salvato nel database.
 
 \vspace{5mm} %5mm vertical space
 
-Giunti a questo punto ci si è resi conto della necessità di svolgere alcune operazioni da svolgere sui dati andavano effettuate esattamente prima del loro salvataggio nel database (o subito dopo).
+Giunti a questo punto ci si è resi conto della necessità di svolgere alcune operazioni da svolgere sui dati andavano effettuate esattamente prima del loro salvataggio nel database (o subito dopo). %% SAM: prima frase: hai usato svolgere 2 volte in fila, sembra strano.
 Per richiamare queste operazioni si è quindi deciso di implementare in ODMModel una politica di 'callback'. 
 
 \newpage
 
-Per callback si intende una funzione che viene passata come argomento ad un'altra, nel nostro caso sono state definite due tipologie di callback:
+Per callback si intende una funzione che viene passata come argomento ad un'altra, 
+%% SAM: suggerimento: con lo scopo di essere richiamata posteriormente. Si usa quando l'azione desiderata non può essere eseguita subito ma dev'essere posticipata per qualche ragione. Nel nostro caso...
+nel nostro caso sono state definite due tipologie di callback:
 \begin{itemize}
 \item sulla classe, eseguono il metodo sulla classe a cui è associato per ogni istanza esistente;
 \item sulla istanza, eseguono il metodo una sola volta sulla istanza su cui viene richiamato. 
@@ -1048,7 +1052,7 @@ La classe Logger può essere richiamata grazie ad alcuni tipi di funzioni in bas
 
 \vspace{5mm} %5mm vertical space
 
-Grazie all'uso dell'indentazione si è cercato di rendere l'output più semplice da capire; inoltre l'utente che aggiorna i dati può settare tramite una variabile il livello di verbosità del Logger così da visualizzare solo le informazioni di suo interesse.
+Grazie all'uso dell'indentazione si è cercato di rendere l'output più semplice da capire; inoltre l'utente che aggiorna i dati può settare tramite una variabile il livello di verbosità del Logger così da visualizzare solo le informazioni di suo interesse. %% SAM: potresti spiegare che il tipo di filtering degli errori è per "criticità".
 
 Le chiamate alla classe Logger quindi sono utilizzate in maniera esaustiva in tutte le procedure svolte dal sistema in modo da semplificare il compito degli addetti.
 
@@ -1154,6 +1158,7 @@ Così facendo si è deciso di dividerle in gruppi che rappresentassero la loro d
 Ogni stanza inoltre è anch'essa un gruppo contenente la polyline del contorno, il room\_id se disponibile è usato come identificatore della stanza.
 
 Dato che per il file SVG può essere definito uno stile grazie ad un CSS (Cascading Style Sheets) si è deciso di utilizzare un LESS.
+%% SAM: sugg: Gli aspetti estetici (colori, contorni, ecc) del file SVG possono essere definiti su un file di stili separato CSS (Cascading Style Sheets). Abbiamo utilizzato un \textit{superset} di CSS chiamato LESS. Si tratta di un preprocessore di CSS in quanto ...
 Tale tipologia di file viene definita come un preprocessore di CSS in quanto ne estende le funzionalità per poi venire tradotto proprio in un CSS.
 Il nostro LESS ha quindi il compito di definire un colore per ogni gruppo di categorie i quali sono specificati nel dizionario in 'room\_categories.json'. 
 Si è deciso però di non rendere tutte le categorie visibili nelle mappe: tale scelta è dovuta alla poca utilità di alcuni tipi di stanze per gli utenti dell'Università degli Studi di Milano.
@@ -1291,6 +1296,9 @@ Tali errori però sono riconducibili proprio alla mancanza di esperienza dei mem
 \vspace{5mm} %5mm vertical space
 
 A mio modesto parere però il prodotto sin qui sviluppato ha portato alla definizione di un database contente dati di qualità molto buona che utilizzati nella futura applicazione multi-piattaforma porteranno un notevole beneficio per gli utenti dell'Università degli Studi di Milano.   
+
+%% SAM: La tua conclusione è eccezionale. Nient'altro da dire :) Complimenti (dottor) Paolo, e grazie ancora una volta!
+
 %
 %
 
