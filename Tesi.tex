@@ -86,6 +86,12 @@ otherkeywords={03,05,10,floor_name,suffix_regex,name_regexes,csv_headers,edilizi
 keywordstyle=\color{green},
 }}
 
+\newcommand\mergestyle{\lstset{
+basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont,
+commentstyle=\color{black},
+otherkeywords={building_number,l_b_id,coordinates,type,address,building_name,floors,f_id,walls,unidentified_,rooms,windows,cat_id,polygon,R054,R053,room_name,equipments,capacity,accessibility,"_id,dxf,edilizia,easyroom,merged},
+keywordstyle=\color{green},
+}}
 
 % Python environment
 \lstnewenvironment{python}[1][]
@@ -105,6 +111,13 @@ keywordstyle=\color{green},
 \lstnewenvironment{dict}[1][]
 {
 \dictstyle
+\lstset{#1}
+}{}
+
+% Merge environment
+\lstnewenvironment{merge}[1][]
+{
+\mergestyle
 \lstset{#1}
 }{}
 
@@ -942,6 +955,76 @@ Nel nostro caso sono state definite due tipologie di callback:
 Come detto inoltre le callback possono venire richiamate sia prima del salvataggio (\textit{before\_callback}) sia dopo (\textit{after\_callback}).
 
 La politica di callback viene utilizzata ad esempio per mantenere ordinate le liste di piani salvati nei documenti in MongoDB: la classe Building si occupa infatti di effettuare una callback passando la funzione \textit{ensure\_floors\_sorting}
+
+\begin{merge}[title=Esempio di documento salvato nel database , frame=single]
+{
+"_id" : "31110",
+"dxf" : {...},
+"easyroom" : {...},
+"edilizia" : {...},
+"merged" : {
+   "building_number" : "1",
+   "l_b_id" : "5784",
+   "coordinates" : {
+      "coordinates" : [ 
+         9.227551999999999, 
+         45.473898
+      ],
+      "type" : "Point"
+   },
+   "address" : "Via Saldini, 50, Milano, 20133",
+   "building_name" : "Matematica",
+   "floors" : [ 
+      {
+         "f_id" : "-05",
+         "walls" : [...],
+         "rooms" : {},
+         "windows" : [...],
+         
+\end{merge}
+\begin{merge}[frame=single]
+         "unidentified_rooms" : [ 
+            {
+               "cat_id" : "LAB02",
+               "polygon" : {...}
+            }, 
+            ...
+         ]
+      }, 
+      {
+         "f_id" : "03",
+         "walls" : [...],
+         "rooms" : {
+            "R054" : {
+               "room_name" : "Aula 4",
+               "equipments" : [ "Pc", "Videoproiettore" ],
+               "capacity" : "90",
+               "cat_id" : "AUL01",
+               "accessibility" : "0",
+               "polygon" : {...}
+            },
+            "R053" : {
+               "room_name" : "Aula 5",
+               "equipments" : [ "" ],
+               "capacity" : "36",
+               "cat_id" : "AUL01",
+               "accessibility" : "0",
+               "polygon" : {...}
+            }
+         },
+         "windows" : [...],
+         "unidentified_rooms" : [ 
+            {
+               "cat_id" : "BBL01",
+               "polygon" : {...}
+            }, 
+            ...
+         ]
+      },
+   ]
+}
+\end{merge}
+
 
 \newpage
 \section{Reporting degli errori e delle criticità}
