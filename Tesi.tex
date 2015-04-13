@@ -76,7 +76,8 @@ keywordstyle=[3]\color{green},
 keywordstyle=[4]\color{red},
 keywords=[2]{warn},
 keywords=[3]{ok},
-keywords=[4]{fail}
+keywords=[4]{fail},
+belowskip=2em
 }}
 
 \newcommand\dictstyle{\lstset{
@@ -84,6 +85,7 @@ basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont,
 commentstyle=\color{black},
 otherkeywords={03,05,10,floor_name,suffix_regex,name_regexes,csv_headers,edilizia,buildings,rooms,room_cat,easyroom,AUM01,LAB01,SAL04,SPZ01,group_name,description,scope},
 keywordstyle=\color{green},
+belowskip=2em
 }}
 
 \newcommand\mergestyle{\lstset{
@@ -91,6 +93,7 @@ basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont,
 commentstyle=\color{black},
 otherkeywords={building_number,l_b_id,coordinates,type,address,building_name,floors,f_id,walls,unidentified_,rooms,windows,cat_id,polygon,R054,R053,room_name,equipments,capacity,accessibility,"_id,dxf,edilizia,easyroom,merged},
 keywordstyle=\color{green},
+belowskip=2em
 }}
 
 % Python environment
@@ -219,12 +222,14 @@ Sia l'edilizia che i sistemi informativi hanno fornito dati sulle aule organizza
 
 I file XLS essendo per loro natura in formato tabellare risultano di non difficile lettura, ma ancora più semplice risulta quella dei file CSV (Comma-separated values): un formato basato su file di testo ricavabile senza sforzo da fogli elettronici o da database. 
 
-Il formato AutoCAD DWG invece è risultato molto più complicato da analizzare in quanto risulta essere un file binario diviso in diverse sezioni la cui codifica è molto complessa. Vista l'impossibilità di ottenere dati in modo semplice si è cercato un formato più adatto ai nostri scopi in cui esportare la collezione di 606 file DWG forniti. La scelta è ricaduta sull'altro formato AutoCAD cioè il DXF\footnote{DXF (Drawing Interchange Format, o Drawing Exchange Format) estensione di file principalmente utilizzata per l'esportazione su altri sistemi CAD.}: questo standard utilizza un file ASCII diviso in sezioni (HEADER, CLASSES, TABLES, ENTITIES, OBJECTS, THUMBNAILIMAGE ed END OF FILE) risultando quindi facilmente analizzabile tramite un linguaggio di programmazione. La sezione di maggior interesse per in nostri scopi è risultata ENTITIES che contiene tutti gli oggetti disegnati nel file con le loro caratteristiche.\\
+Il formato AutoCAD DWG invece è risultato molto più complicato da analizzare in quanto risulta essere un file binario diviso in diverse sezioni la cui codifica è molto complessa. Vista l'impossibilità di ottenere dati in modo semplice si è cercato un formato più adatto ai nostri scopi in cui esportare la collezione di 606 file DWG forniti. 
+La scelta è ricaduta sull'altro formato AutoCAD cioè il DXF\footnote{DXF (Drawing Interchange Format, o Drawing Exchange Format) tipologia di file principalmente utilizzata per l'esportazione su altri sistemi CAD.}: questo standard utilizza un file ASCII diviso in sezioni (HEADER, CLASSES, TABLES, ENTITIES, OBJECTS, THUMBNAILIMAGE ed END OF FILE) risultando quindi facilmente analizzabile tramite un linguaggio di programmazione. 
+La sezione di maggior interesse per i nostri scopi è risultata ENTITIES che contiene tutti gli oggetti disegnati nel file con le loro caratteristiche.\\
 
 Dimostrata la fattibilità del progetto partendo da questi formati di dati ci si è concentrati sulla ricerca degli scenari d'uso per l'applicazione:        
 \begin{itemize}
 \item trovare le sedi universitarie vicine alla propria posizione;
-\item trovare le stanze di una certa categoria (biblioteche, aule, punti ristoro, etc...) più vicine;
+\item trovare le stanze di una certa categoria (biblioteche, aule, punti ristoro, etc.) più vicine;
 \item cercare le stanze per nome mostrando una lista in caso di ambiguità;
 \item mostrare le mappe interne degli edifici rendendole interattive;
 \item segnalare errori e problematiche con un apposito form in modo da rendere le informazioni disponibili sempre più corrette e affidabili.
@@ -236,7 +241,7 @@ Dimostrata la fattibilità del progetto partendo da questi formati di dati ci si
 
 La fase successiva del progetto ha riguardato la scelta delle tecnologie da utilizzare durante lo sviluppo delle funzionalità: prima fra tutte la scelta del linguaggio di programmazione.
 
-Dopo un'esplorazione delle varie possibilità è stato deciso di utilizzare Python\footnote{\url{https://www.python.org}} nella sua ultima versione (la 3). Python è un linguaggio ad alto livello multi-paradigma: è orientato agli oggetti ma possiede caratteristiche dei linguaggi funzionali che rendono molto più semplice e leggibile l'implementazione di alcuni pezzi di codice.
+Dopo un'esplorazione delle varie possibilità è stato deciso di utilizzare Python\footnote{\url{https://www.python.org}} nella sua ultima versione (la 3). Python è un linguaggio ad alto livello multi-paradigma: è orientato agli oggetti ma possiede caratteristiche dei linguaggi funzionali che rendono molto più semplice e leggibile l'implementazione di alcune funzionalità.
 
 In Python le variabili non sono tipizzate (quindi ogni variabile è un puntatore ad un oggetto): il controllo dei tipi è comunque molto forte e viene fatto tramite tipizzazione dinamica.
 Per quanto riguarda la leggibilità del codice in Python viene utilizzata l'indentazione per dividere i programmi in blocchi: ciò porta il codice ad essere molto più elegante rispetto ad altri linguaggi e lo rende molto leggibile anche per chi non conosce il linguaggio.
@@ -326,7 +331,7 @@ Oltre ad essere presente nell'approccio TDD il refactoring è stato utilizzato l
 
 La programmazione a coppie suggerita da Extreme Programming è stata applicata per gran parte del processo di sviluppo nonostante il team fosse composto da 3 elementi. Per ovviare a questo `problema' la composizione della coppia che portava avanti l'implementazione è stata decisa a rotazione: due persone scrivevano codice e una studiava nuove funzionalità o migliorava la propria conoscenza delle tecnologie utilizzate. Soprattutto nella prima parte di sviluppo questo approccio è risultato molto produttivo in quanto tutte le persone del progetto erano alle prime esperienze per quanto riguarda l'uso del linguaggio di programmazione scelto (Python), del database (MongoDB), ma anche per il lavoro in team. Nella seconda parte del progetto invece l'elemento che restava da solo avendo ormai acquisito sufficiente padronanza delle tecnologie scelte poteva sviluppare autonomamente nuove funzionalità.
 
-Lo standard di codifica è stato scelto sempre in funzione della leggibilità e dell'eleganza del codice; il pair programmming inoltre ha aiutato enormemente nel rispettarlo. Per quanto riguarda la documentazione invece si è cercato di aggiungere dei commenti all'inizio di ogni metodo complesso che specificassero la funzione, i parametri in ingresso e i risultati ritornati. Altri commenti invece sono stati inseriti nella parti di codice considerate poco leggibili in modo da aiutare anche un membro esterno al team alla comprensione.   
+Lo standard di codifica è stato scelto sempre in funzione della leggibilità e dell'eleganza del codice; il pair programmming inoltre ha aiutato enormemente nel rispettarlo. Per quanto riguarda la documentazione invece si è cercato di aggiungere dei commenti all'inizio di ogni metodo complesso che specificassero la funzione, i parametri in ingresso e i risultati ritornati. Altri commenti invece sono stati inseriti nelle parti di codice considerate poco leggibili in modo da aiutare anche un membro esterno al team alla comprensione.   
 
 \newpage
 \section{Estrazione dei dati dai file DXF}
@@ -382,7 +387,7 @@ In tale classe sono stati poi implementati dei metodi di trasformazione utili a 
 
 Il passo successivo è consistito nel definire altre tipologie di oggetti che rispecchiassero i dati utili letti dalle entità dei DXF; le classi create sono state:
 \begin{itemize}
-\item Polygon, definibile come una collezione di punti ordinata che collegati formano un poligono;
+\item Polygon, definibile come una collezione di punti ordinata, tali punti una volta collegati formano un poligono;
 \item Text, un testo con un punto che indica la posizione in cui deve essere posto.
 \end{itemize}
 
@@ -451,9 +456,9 @@ Il piano viene quindi ridimensionato in modo che abbiano tutti dimensioni simili
 
 Il nostro Floor si può considerare completo a meno delle informazioni sulla sua identificazione: il codice del palazzo a cui appartiene e il codice che identifica di che piano si tratti. 
 Il codice del palazzo definito per semplicità come `building\_id' (abbreviato `b\_id') viene estratto in maniera semplice dal nome del file DXF processato: applicando una espressione regolare si estrae la prima parte del nome che secondo convenzione è proprio il nostro b\_id. 
-Per quanto riguarda l'identificazione del piano (floor\_id' o `f\_id') invece il processo è più complicato in quanto la convenzione di farlo seguire al b\_id nel nome del file non è stata sempre seguita e molti identificatori risultano errati. 
+Per quanto riguarda l'identificazione del piano (`floor\_id' o `f\_id') invece il processo è più complicato in quanto la convenzione di farlo seguire al b\_id nel nome del file non è stata sempre seguita e molti identificatori risultano errati. 
 Per evitare una correzione manuale di tutti gli errori presenti nei file a disposizione la soluzione adottata ha riguardato l'implementazione di una classe apposita, FloorInference, con lo scopo di implementare una procedura che cerchi di ricavare il corretto f\_id.
-La procedura si occupa di ricavare dal DXF letto i dati del layer `CARTIGLIO' nel quale sono contenute le informazioni riguardanti ciò che è stato disegnato nella cartina (nome del palazzo, disegnatore, data...) tra cui il nome del piano.
+La procedura si occupa di ricavare dal DXF letto i dati del layer `CARTIGLIO' nel quale sono contenute le informazioni riguardanti ciò che è stato disegnato nella cartina (nome del palazzo, disegnatore, data. etc.) tra cui il nome del piano.
 Controllando quali testi contenessero la parola `PIANO' o quali fossero vicini a tale parola è stata ricavata per ogni file una lista non troppo lunga di possibili nomi di piano.  
 Il passo successivo è stata la creazione di un file `floor\_inference.json' che contenesse un dizionario in cui:
 \begin{itemize}
@@ -500,9 +505,9 @@ In questo modo nella maggior parte dei casi si riesce a ricavare sia il building
 \section{Estrazione dei dati dai file CSV}
 
 I dati ricevuti sulle aule, come scritto in precedenza, erano in formato XLS che per comodità si è deciso di convertire in CSV: una tipologia di file di testo rappresentante una tabella.
-In questo formato nella prima linea sono indicati i nomi delle colonne mentre in quelle successive sono inseriti i dati. Le varie colonne sono separate da un carattere specifico che viene deciso in fase di codifica: nel nostro caso si trattava di una virgola (`,').
+In questo formato nella prima linea sono indicati i nomi delle colonne mentre in quelle successive sono inseriti i dati. Le varie colonne sono separate da un carattere specifico che viene deciso in fase di codifica: nel nostro caso si trattava di una virgola (`,').\\
 
-Per la lettura di un file CSV in Python è bastato importare il modulo `csv' contenuto nella libreria standard e dopo aver aperto il file lo si può leggere partendo dal primo byte (\textit{seek(0)})con la funzione \textit{reader}: il risultato deve essere trasformato in un iteratore che fatto scorrere conterrà il file letto riga per riga.\\
+Per la lettura di un file CSV in Python è bastato importare il modulo `csv' contenuto nella libreria standard e dopo aver aperto il file lo si può leggere partendo dal primo byte (\textit{seek(0)}) con la funzione \textit{reader}: il risultato deve essere trasformato in un iteratore che fatto scorrere conterrà il file letto riga per riga.\\
 
 \begin{python}[title=Lettura di un file CSV, frame=single]
 >>> csvfile = open("file.csv")
@@ -525,7 +530,7 @@ Per la lettura di un file CSV in Python è bastato importare il modulo `csv' con
 \newpage
 
 In questo modo basta leggere il contenuto fino alla fine dell'iteratore per ricavare tutti i dati del file. 
-Per rendere le informazioni lette meglio manipolabili in un futuro sono state memorizzate in una lista di dizionari in cui le chiavi corrispondono ai nomi delle colonne lette (header).
+Per rendere le informazioni lette meglio manipolabili in futuro sono state memorizzate in una lista di dizionari in cui le chiavi corrispondono ai nomi delle colonne lette (header).
 
 \begin{python}[title=Memorizzazione dei dati in un dizionario, frame=single]
 >>> header = [ s.strip() for s in next(it) ]
@@ -619,7 +624,7 @@ Il Data Integration System implementato per l'IMPUMS si basa su un approccio ETL
 
 L'approccio ETL è composto, come dice il nome, da tre fasi distinte:
 \begin{itemize}
-\item estrazione, consiste nel ricavare dalle varie fonti (file, database, etc..) i dati utili al processo, nel nostro caso si tratta delle informazioni estratte in precedenza dai file CSV e DXF;
+\item estrazione, consiste nel ricavare dalle varie fonti (file, database, etc.) i dati utili al processo, nel nostro caso si tratta delle informazioni estratte in precedenza dai file CSV e DXF;
 \item trasformazione, cioè l'applicazione di tutte le trasformazioni utili ai dati affinché possano essere utilizzati dall'utente finale, per il processo da noi sviluppato si tratta di applicare le procedure descritte in precedenza (Data Filtering e Data Validation) e di definire una nuova procedura per l'unificazione dei dati;
 \item caricamento, si intende la memorizzazione dei dati provenienti dalla fase di trasformazione in un database definibile per la maggior parte dei casi come un Data Warehouse.
 \end{itemize}
@@ -662,7 +667,7 @@ Viceversa il LAV favorisce le possibili estensioni rispetto a nuove sorgenti ma 
 
 Per GLAV (Global and Local As View) si intende un ibrido tra le due strategie appena descritte: in questo caso la relazione tra le sorgenti e lo schema globale è stabilita attraverso delle view, alcune definite sullo schema globale e alcune sulle sorgenti.\\
 
-Dato che il progetto Spazi-Unimi prevede di operare principalmente su dati edilizi i quali risultano statici a meno di rare variazioni (ad esempio un cambio di sede per un dipartimento, ristrutturazioni, cambi di destinazione delle stanze) si è deciso di implementare un sistema ETL che definisce un database di tipo Data Warehouse.
+Dato che il progetto Spazi-Unimi prevede di operare principalmente su dati edilizi i quali risultano statici a meno di rare variazioni (ad esempio un cambio di sede per un dipartimento, delle ristrutturazioni o dei cambi di destinazione delle stanze) si è deciso di implementare un sistema ETL che definisce un database di tipo Data Warehouse.
 
 
 \newpage
@@ -682,7 +687,7 @@ Il file degli edifici contiene i seguenti dati per ogni palazzo rappresentato:
 
 Il file CSV con le informazioni sulle aule didattiche della Divisione Manutenzione edilizia e impiantistica contiene:
 \begin{itemize}
-\item building\_id, corrispondente a uno di quelli del file degli edifici, tale dato è sempre presente per ogni aula e risulta utilissimo per definire in che palazzo si trova tale stanza;
+\item building\_id, corrispondente a uno di quelli nel file degli edifici, tale dato è sempre presente per ogni aula e risulta utilissimo per definire in che palazzo si trova tale stanza;
 \item address, informazione ridondante rispetto al file precedente, è sempre presente per ogni aula;
 \item legacy\_floor, identificativo proprio della Divisione Manutenzione edilizia e impiantistica per indicare in che piano si trova l'aula, l'informazione è sempre presente ma non è di immediata lettura e il livello di accuratezza si può verificare solo controllando stanza per stanza sulle piantine fornite;
 \item room\_id, identificativo dell'aula risulta univoco solo all'interno di uno stesso palazzo, è sempre presente e combinandolo con il building\_id può fornire una chiave univoca per l'identificazione della stanza;
@@ -717,10 +722,10 @@ L'ultimo file CSV da analizzare è stato quello dei sistemi informativi contenen
 \item room\_name è il nome umano della stanza; è sempre presente e come per il file CSV corrispettivo risulta molto utile per la ricerca di aule degli utenti;
 \item building\_id, informazione ridondante dato che è contenuta anche dal room\_id, è sempre presente ma come per il file di edifici utilizza anche identificatori provvisori non utilizzabili dall'applicazione;
 \item venue, indica la sede contenente l'aula; è sempre presente ma come in precedenza utilizza nominativi troppo generici rispetto alle informazione dell'edilizia;
-\item capacity indica la capienza dell'aula; è sempre presente anche se le informazioni fornite dall'edilizia possono sembrare in tale ambito più affidabili;
-\item type indica la tipologia di grandezza dell'aula classificandola in `Piccola', `Media' o `Grande'; l'informazione è sempre presente ma risulta troppo generica e poco utile all'utente finale;
-\item available indica la possibilità di utilizzarla previa richiesta; il dato è sempre presente ma indica un risposta negativa per ogni aula quindi non risulta utilizzabile;
-\item equipments elenca gli accessori presenti in tale aula (proiettore, pc, lavagna luminosa, etc.); il dato è presente in molte aule e se non presente si può presupporre che la stanza non abbia nessun accessorio;
+\item capacity, indica la capienza dell'aula; è sempre presente anche se le informazioni fornite dall'edilizia possono sembrare in tale ambito più affidabili;
+\item type, indica la tipologia di grandezza dell'aula classificandola in `Piccola', `Media' o `Grande'; l'informazione è sempre presente ma risulta troppo generica e poco utile all'utente finale;
+\item available, indica la possibilità di utilizzarla previa richiesta; il dato è sempre presente ma indica un risposta negativa per ogni aula quindi non risulta utilizzabile;
+\item equipments, elenca gli accessori presenti in tale aula (proiettore, pc, lavagna luminosa, etc.); il dato è presente in molte aule e se non presente si può presupporre che la stanza non abbia nessun accessorio;
 \item description, descrizione della destinazione d'uso della stanza, risulta presente in circa la metà dei casi ma è troppo generica (ad esempio: `tradizionale') e non corrisponde quasi mai allo standard utilizzato dall'edilizia;
 \item legacy\_floor, piano in cui si trova l'aula, utilizza uno standard basato sui numeri interi quindi risulta più comprensibile rispetto al dato fornito dall'edilizia; l'informazione non è presente solo per 2 stanze ma risulta difficile dedurne l'affidabilità;
 \item accessibility indica la possibilità da parte di una persona disabile di accedere alla stanza; è rappresentata con un numero (`0' se non è possibile, `1' se lo è) ed è sempre presente nelle stanze conosciute dalla Divisione sistemi informativi. Il dato inoltre è molto utile ai fini degli utenti finali dell'applicazione. 
@@ -800,7 +805,7 @@ Questa scelta è stata fatta in funzione di due fatti:
 \item per effettuare l'unione delle informazioni di un palazzo bisogna attendere che i dati di tutte le fonti siano presenti: ciò nel nostro caso può richiedere molto tempo (a causa della differenza di frequenza degli aggiornamenti per le varie fonti) quindi risulta utile memorizzare i dati separati per poi applicare su di essi il processo di merge.
 \end{itemize}
 
-Una volta definite le classi con lo scopo di leggere i dati dalle due tipologie di file a disposizione quindi si è deciso di implementare un programma principale ('main') dal quale richiamare con gli appositi comandi il processamento dei file.
+Una volta definite le classi con lo scopo di leggere i dati dalle due tipologie di file a disposizione quindi si è deciso di implementare un programma principale (`main') dal quale richiamare con gli appositi comandi il processamento dei file.
 I comandi implementati sono stati:
 \begin{itemize}
 \item dxf file.dxf, al comando `dxf' si passa uno o più file DXF da processare;
@@ -915,7 +920,8 @@ La soluzione è stata trovata ragionando su quale fonte sembrasse maggiormente a
 La fonte con affidabilità maggiore per quanto riguarda il raggruppamento delle aule in piani è risultata senza ombra di dubbio quella dei DXF: se una stanza si trova nello stesso piano delle altre sicuramente sarà disegnata nella stessa piantina. L'ordinamento delle due fonti CSV invece è il risultato di un'esplorazione più approfondita dei casi critici riscontrati: il CSV proveniente dalla Divisione Manutenzione edilizia e impiantistica contenendo meno errori di quello della Divisione sistemi informativi ha ricevuto una maggiore priorità.
 
 La maggior affidabilità della fonte ha portato all'esecuzione in maniera prioritaria delle sue informazioni nella procedura di merge dei floor: la fonte presente con maggior attendibilità viene utilizzata come base per le operazioni di unificazione dei dati.
-`edilizia' (la seconda per priorità). Il risultato di tale merge viene poi passato alla stessa procedura con la chiave rimanente cioè `easyroom'.
+In pratica in un edificio con informazioni provenienti dalle tutte e tre le fonti la chiave `dxf' viene utilizzata come base e passata alla funzione \textit{match\_and\_merge\_floors} con le informazioni della chiave `edilizia' (la seconda per priorità). 
+Il risultato di tale merge viene poi passato alla stessa procedura con la chiave rimanente cioè `easyroom'.
 
 La funzione \textit{match\_and\_merge\_floors} riceve una lista di piani dalla sorgente `base' e si occupa di ciclare piano per piano associando le stanze provenienti dall'altra fonte. I piani vengono trattati come nella teoria degli insiemi quindi dall'insieme totale delle aule della sorgente secondaria viene tolta l'intersezione con l'insieme del piano base su cui si sta operando. In questo modo alla fine del ciclo sui piani base si potrebbero avere delle aule non risultanti in nessun piano: in questo caso si controlla dove è andato a finire l'insieme con cardinalità maggiore delle aule aventi lo stesso identificativo di piano e si associa la stanza allo stesso.
 
@@ -928,7 +934,7 @@ Unica eccezione a questo modo di operare è data dall'attributo che indica la ca
 La motivazione sta nell'aver riscontrato alcune criticità sul posizionamento di tali etichette soprattutto per quanto riguarda stanze molto piccole: in tali casi l'etichetta non essendo contenuta risulta associata a stanze vicine rischiando di provocare un errore nell'inferenza delle categorie.\\
 
 Tutte le operazioni di merge sono quindi richiamabili tramite due singole funzioni: \textit{merge\_building} e \textit{merge\_floors}.
-Tali procedure vanno quindi richiamate ogni volta che si deve rieseguire l'unione di dati a seguito di una modifica degli stessi.
+Tali procedure vanno perciò richiamate ogni volta che si deve rieseguire l'unione di dati a seguito di una modifica degli stessi.
 Per evitare di creare un task specifico da richiamare manualmente da chi ha aggiornato i dati si è deciso di porre le chiamate dei metodi in punti chiave dell'aggiornamento dei dati.
 \textit{merge\_building} viene richiamato nel BuildinDataUpdater quando vengono aggiornati i dati nelle varie chiavi, in questo momento le informazioni sono disponibili e una volta effettuato il merge ed aggiunta (o modificata) la chiave `merged' si può procedere ad un unico salvataggio nel database.
 La procedura \textit{merge\_floors} invece può essere richiamata in tre punti diversi del codice:
@@ -942,8 +948,6 @@ Anche questa volta la procedura viene richiamata, il risultato posto nella chiav
 
 Giunti a questo punto ci si è resi conto della necessità di svolgere alcune operazioni sui dati esattamente prima del loro salvataggio nel database (o subito dopo).
 Per richiamare queste operazioni si è quindi deciso di implementare in ODMModel una politica di `callback'. 
-
-\newpage
 
 Per callback si intende una funzione che viene passata come argomento ad un'altra con lo scopo di essere eseguita successivamente, ciò risulta molto utile quando per qualche ragione l'operazione non può essere subito effettuata.
 Nel nostro caso sono state definite due tipologie di callback:
@@ -980,12 +984,11 @@ La politica di callback viene utilizzata ad esempio per mantenere ordinate le li
          "walls" : [...],
          "rooms" : {},
          "windows" : [...],
-         
+         "unidentified_rooms" : [ 
+            {         
+               "cat_id" : "LAB02",
 \end{merge}
 \begin{merge}[frame=single]
-         "unidentified_rooms" : [ 
-            {
-               "cat_id" : "LAB02",
                "polygon" : {...}
             }, 
             ...
@@ -1010,7 +1013,8 @@ La politica di callback viene utilizzata ad esempio per mantenere ordinate le li
                "cat_id" : "AUL01",
                "accessibility" : "0",
                "polygon" : {...}
-            }
+            },
+            ...
          },
          "windows" : [...],
          "unidentified_rooms" : [ 
@@ -1042,7 +1046,7 @@ La classe Logger può essere richiamata grazie ad alcuni tipi di funzioni in bas
 \item success, l'etichetta verde indica la conclusione del programma mostrando le statistiche sui tempi di esecuzione.
 \end{itemize}    
 
-Grazie all'uso dell'indentazione si è cercato di rendere l'output più semplice da capire; inoltre l'utente che aggiorna i dati può settare tramite una variabile il livello di verbosità del Logger così da visualizzare solo le informazioni di suo interesse (ad esempio si possono visualizzare solo gli `error' e le `info' associate).
+Grazie all'uso dell'indentazione si è cercato di rendere l'output più semplice da capire; inoltre l'utente che aggiorna i dati può settare tramite una variabile il livello di verbosità del Logger così da visualizzare solo le informazioni di suo interesse (ad esempio si possono visualizzare solo gli `error' e le `info' associate a tale errore).
 
 Le chiamate alla classe Logger quindi sono utilizzate in maniera esaustiva in tutte le procedure svolte dal sistema in modo da semplificare il compito degli addetti.
 
@@ -1189,7 +1193,7 @@ Grazie al comando `svg' infatti si possono generare tutti i file degli edifici d
 \newpage
 \section{Considerazioni finali sullo sviluppo del progetto e sul miglioramento personale}
 
-Il progetto Spazi-Unimi come detto si proponeva di creare una applicazione multipiattaforma che aiutasse gli utenti ad orientarsi nel contesto dell'Università degli Studi di Milano.
+Il progetto Spazi-Unimi come detto si proponeva di creare una applicazione multi-piattaforma che aiutasse gli utenti ad orientarsi nel contesto dell'Università degli Studi di Milano.
 La prima cosa che si può dire giunti alla fine del periodo di tirocinio previsto (18 settimane) è che il progetto è più o meno a metà strada rispetto alla sua conclusione.
 Le stime iniziali effettuate dai membri del team prevedevano il completamento del lavoro nei tempi citati quindi si può dire che tali stime non fossero corrette. 
 Ben presto infatti ci si è accorti che le problematiche relative allo sviluppo e del sistema erano molto più complesse rispetto alle aspettative iniziali.
@@ -1218,7 +1222,7 @@ Un'altra caratteristica fondamentale dei prodotti software che si è cercato di 
 Python da solo fornisce una sintassi pulita e leggibile ma in molti casi ci si è scontrati con funzioni molto lunghe e complesse che riviste dopo qualche tempo risultavano difficili da comprendere anche a chi le aveva scritte.
 Per questo motivo il refactoring è stata una fase fondamentale del nostro processo di sviluppo: ogni qualvolta si notava una porzione di codice da rivedere o lo si faceva immediatamente o si aggiungeva una nota su Trello così da non dimenticarsi della modifica da fare.
 
-Nonostante un team di più persone possa solitamente produrre codice scritto in maniera molto diversa in base al membro impegnato nella scrittura si è cercato di adottare lo stile consigliato di Python\footnote{\url{https://www.python.org/dev/peps/pep-0008}} leggermente adattato per rispecchiare le nostre esigenze.
+Nonostante un team di più persone possa solitamente produrre codice scritto in maniera molto diversa, in base al membro impegnato nella scrittura, si è cercato di adottare lo stile consigliato di Python\footnote{\url{https://www.python.org/dev/peps/pep-0008}} leggermente adattato per rispecchiare le nostre esigenze.
 Un esempio è la denominazione dei metodi privati: tale distinzione in Python non esiste quindi per indicare l'insieme di funzioni che non andrebbero richiamate al di fuori della classe si utilizza un underscore (`\_') prima del nome del metodo.
 
 Sempre con l'obbiettivo della leggibilità del codice scritto si è inoltre aggiunta ad ogni funzione una docstring cioè un commento con il compito di descrizione.
